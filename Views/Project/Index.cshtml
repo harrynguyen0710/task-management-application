@@ -1,0 +1,28 @@
+﻿@model IEnumerable<Project>
+
+<table class="w-full text-sm text-left text-gray-500">
+    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+        <tr>
+            <th class="px-6 py-3">Project Name</th>
+            <th class="px-6 py-3">Status</th>
+            <th class="px-6 py-3">Start Date</th>
+            <th class="px-6 py-3">Organization</th>
+            <th class="px-6 py-3"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var project in Model)
+        {
+            <tr class="bg-white border-b hover:bg-gray-50">
+                <td class="px-6 py-4">@project.name</td>
+                <td class="px-6 py-4">@project.status</td>
+                <td class="px-6 py-4">@project.startDate.ToShortDateString()</td>
+                <td class="px-6 py-4">
+                    <button class="text-red-500 hover:text-red-700" onclick="confirmDelete(@project.projectId)">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
