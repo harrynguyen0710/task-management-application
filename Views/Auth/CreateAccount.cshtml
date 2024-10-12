@@ -1,0 +1,13 @@
+﻿@{
+    ViewData["Title"] = "Create a View";
+}
+
+<h1>Create a View</h1>
+
+<form asp-action="CreateAccount" method="post">
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" class="form-control" id="email" name="Email" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
