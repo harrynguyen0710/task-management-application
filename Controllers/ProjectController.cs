@@ -49,8 +49,7 @@ namespace task_management.Controllers
             await _projectService.AddProjectAsync(project);
             return RedirectToAction(nameof(Index));
             
-/*            return View(student);
-*/        }
+        }
 
     }
 }
