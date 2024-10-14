@@ -1,16 +1,24 @@
+﻿using DotNetEnv;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using task_management.Data;
 using task_management.IRepositories;
+using task_management.Models;
 using task_management.Repositories;
 using task_management.Services;
-using DotNetEnv;
-using Microsoft.AspNetCore.Identity;
-using task_management.Models;
 
 
 Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddScoped<EmailService>(provider => new EmailService(
+    Environment.GetEnvironmentVariable("SMTP_USERNAME"),
+    Environment.GetEnvironmentVariable("SMTP_PASSWORD")
+));
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
@@ -18,8 +26,6 @@ builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ProjectService>();
 builder.Services.AddScoped<IdentityService>();
-
-
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("TaskApplication"))
@@ -58,7 +64,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-app.UseAuthentication();    
+app.UseAuthentication();
 app.UseAuthorization();
 
 
@@ -66,7 +72,7 @@ app.UseAuthorization();
 using (var scope = app.Services.CreateScope())
 {
     var roleManger = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    var roles = new[] {"Admin", "Manager", "Staff"};
+    var roles = new[] { "Admin", "Manager", "Staff" };
 
     foreach (var role in roles)
     {

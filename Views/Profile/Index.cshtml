@@ -1,0 +1,110 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile Detail</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">
+            <img src="https://storage.googleapis.com/a1aa/image/q4khwifUck1iICrneFfSMWf7zgu9cbfH4KQXSlRDan7foDs4E.jpg" 
+                 alt="Company Logo" height="40" width="40" class="rounded-full"> 
+        </a>
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="#">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Tasks</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Create Task</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Employees</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Reports</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <span class="text-red-500 mr-2">Admin</span>
+                <img src="https://storage.googleapis.com/a1aa/image/FiBdZjCeMz3ZdCvWFVP431jFaiiflH9na9Cew3wZZ1aDifLOB.jpg" 
+                     alt="Admin Avatar" height="40" width="40" class="rounded-full">
+            </li>
+        </ul>
+    </nav>
+
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">User Profile Detail</h1>
+
+        <div class="card">
+            <div class="card-header">
+                <h5>User Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <img src="https://storage.googleapis.com/a1aa/image/FiBdZjCeMz3ZdCvWFVP431jFaiiflH9na9Cew3wZZ1aDifLOB.jpg" 
+                             alt="User Avatar" class="img-fluid rounded-circle mb-3" style="width: 150px;">
+                    </div>
+                    <div class="col-md-8">
+                        <h4>John Doe</h4>
+                        <p><strong>Email:</strong> johndoe@example.com</p>
+                        <p><strong>Role:</strong> Manager</p>
+                        <p><strong>Phone Number:</strong> (123) 456-7890</p>
+                        <p><strong>Joined Date:</strong> 2023-01-15</p>
+                        <p><strong>Bio:</strong> Experienced manager with a passion for leading teams and driving projects to successful completion.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <h5>Recent Activities</h5>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Activity</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Completed quarterly report</td>
+                        <td>2024-09-28</td>
+                        <td><span class="badge badge-success">Completed</span></td>
+                    </tr>
+                    <tr>
+                        <td>Conduct performance reviews</td>
+                        <td>2024-09-07</td>
+                        <td><span class="badge badge-warning">On Hold</span></td>
+                    </tr>
+                    <tr>
+                        <td>Organize teambuilding event</td>
+                        <td>2024-10-28</td>
+                        <td><span class="badge badge-info">Upcoming</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="logout-btn-container">
+            <form method="post" action="/Auth/Logout">
+                <button type="submit" class="btn btn-danger">Logout</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

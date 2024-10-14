@@ -1,0 +1,65 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model task_management.Models.Users
+@{
+    Layout = null;
+}
+<html>
+<head>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+</head>
+<body class="bg-white flex items-center justify-center h-screen">
+    <div class="w-full max-w-xs">
+        <div class="flex flex-col items-center mb-6">
+            <img alt="Logo" class="mb-4" height="100" src="https://storage.googleapis.com/a1aa/image/q4khwifUck1iICrneFfSMWf7zgu9cbfH4KQXSlRDan7foDs4E.jpg" width="100" />
+            <h1 class="text-2xl font-bold">
+                To do list
+            </h1>
+            <p class="text-gray-500">
+                Welcome!
+            </p>
+        </div>
+        <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" method="post" action="/Auth/Login">
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
+                    Email
+                </label>
+                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="email" name="email" type="text" required />
+            </div>
+            <div class="mb-6">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
+                    Password
+                </label>
+                <div class="relative">
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="password" name="password" type="password" required />
+                </div>
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="text-red-500 text-sm mb-4">
+                        <p>@ViewData.ModelState[string.Empty]?.Errors.FirstOrDefault()?.ErrorMessage</p>
+                    </div>
+                }
+            </div>
+            <div class="flex items-center justify-between mb-4">
+                <a class="inline-block align-baseline font-bold text-sm text-gray-500 hover:text-gray-800" asp-action="CheckMail" asp-controller="Auth">
+                    Forgot password?
+                </a>
+            </div>
+            <div class="flex items-center justify-center">
+                <button class="bg-black text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                    Sign in
+                </button>
+            </div>
+        </form>
+
+        <p class="text-center text-gray-500 text-xs">
+            No account?
+            <a class="text-black font-bold" href="#">
+                Sign up
+            </a>
+        </p>
+    </div>
+</body>
+</html>
+
