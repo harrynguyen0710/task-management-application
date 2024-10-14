@@ -12,7 +12,7 @@ namespace task_management.Models
 
         [Required]
         [DataType(DataType.Password)]
-        [Compare("NewPassword", ErrorMessage = "Mật khẩu và mật khẩu xác nhận không trùng khớp.")]
+        [Compare("NewPassword", ErrorMessage = "Password and confirm password do not match.")]
         public string ConfirmPassword { get; set; }
     }
 }

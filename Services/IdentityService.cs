@@ -62,23 +62,22 @@ namespace task_management.Services
         {
             if (string.IsNullOrEmpty(email))
             {
-                throw new ArgumentNullException(nameof(email), "Email không được để trống.");
+                throw new ArgumentNullException(nameof(email), "Email cannot be blank.");
             }
 
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
             {
-                return; // Không làm gì nếu người dùng không tồn tại
+                return;
             }
 
-            // Tạo token reset mật khẩu
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
-            // Lấy scheme và host từ HttpContext
+            // Get scheme and host from HttpContext
             var request = _httpContextAccessor.HttpContext.Request;
             var resetLink = $"{request.Scheme}://{request.Host}/Auth/RenewPassword?userId={user.Id}&token={token}";
 
-            // Gửi email
+            // Send email
             await _emailService.SendEmailAsync(email, "Reset Password",
                 $"Please reset your password by clicking here: <a href='{resetLink}'>link</a>");
         }

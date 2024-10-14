@@ -33,18 +33,18 @@ namespace task_management.Controllers
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
             {
-                ModelState.AddModelError(string.Empty, "Email không hợp lệ.");
+                ModelState.AddModelError(string.Empty, "Invalid email.");
                 return View();
             }
 
-            // Tạo token đặt lại mật khẩu
+            // Create password reset token
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
-            // Tạo đường dẫn để đặt lại mật khẩu
+            // Create a path to reset password
             var resetLink = Url.Action("RenewPassword", "Auth", new { userId = user.Id, Token = token }, Request.Scheme);
 
-            // Gửi email với liên kết đặt lại mật khẩu
-            await _emailService.SendEmailAsync(email, "Reset Password", $"Vui lòng nhấn vào liên kết sau để đặt lại mật khẩu của bạn: <a href='{resetLink}'>Đặt lại mật khẩu</a>. Nếu bạn không yêu cầu thay đổi mật khẩu, vui lòng bỏ qua email này.");
+            // Send email with password reset link
+            await _emailService.SendEmailAsync(email, "Reset Password", $"Please click on the following link to reset your password.: <a href='{resetLink}'>Reset Password</a>. If you did not request a password change, please ignore this email.");
 
             ViewBag.Message = "Reset password link has been sent to your email.";
             return RedirectToAction("Login", "Auth");
@@ -112,7 +112,7 @@ namespace task_management.Controllers
             {
                 return RedirectToAction("Index", "Auth");
             }
-            ModelState.AddModelError(string.Empty, "Mật khẩu hoặc Email không đúng. Vui lòng nhập lại!");
+            ModelState.AddModelError(string.Empty, "Password or Email is incorrect. Please re-enter!");
             return View();
         }
 
