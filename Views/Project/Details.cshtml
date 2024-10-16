@@ -1,0 +1,52 @@
+﻿@model task_management.Models.Project
+
+@{
+    ViewData["Title"] = "Project Details";
+}
+
+<h1>Project Details</h1>
+
+<div>
+    <h4>Project</h4>
+    <hr />
+    <div>
+        <h5>Name</h5>
+        <p>@Model.name</p>
+    </div>
+
+    <div>
+        <h5>Description</h5>
+        <p>@Model.description</p>
+    </div>
+
+    <div>
+        <h5>Start Date</h5>
+        <p>@Model.startDate.ToString("d")</p>
+    </div>
+
+    <div>
+        <h5>Status</h5>
+        @{
+            string badgeClass = Model.status switch
+            {
+                "Not Started" => "bg-secondary",  
+                "In Progress" => "bg-primary",     
+                "Completed" => "bg-warning",       
+                _ => "bg-light"                    
+            };
+        }
+        <span class="badge @badgeClass">
+            @Model.status
+        </span>
+    </div>
+
+    <div>
+        <h5>Organization</h5>
+        <p>@(Model.Organization != null ? Model.Organization.name : "No Organization")</p>
+    </div>
+
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.projectId" class="btn btn-warning">Edit</a>
+        <a asp-action="Index" class="btn btn-primary">Back to List</a>
+    </div>
+</div>
