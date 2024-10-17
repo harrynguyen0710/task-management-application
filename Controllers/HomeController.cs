@@ -1,32 +1,39 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
+using System.Threading.Tasks;
 using task_management.Models;
+using task_management.Services;
 
 namespace task_management.Controllers
 {
+    /*
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly TaskService _taskService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(TaskService taskService)
         {
-            _logger = logger;
+            _taskService = taskService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
-        }
+            var totalTasks = await _taskService.GetTotalTasksAsync();
+            var completedTasks = await _taskService.GetCompletedTasksAsync();
+            var totalEmployees = await _taskService.GetTotalEmployeesAsync();
+            var completionRate = await _taskService.GetCompletionRateAsync();
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
+            var model = new DashboardViewModel
+            {
+                TotalTasks = totalTasks,
+                CompletedTasks = completedTasks,
+                CompletionRate = completionRate,
+                TotalEmployees = totalEmployees
+            };
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(model);
         }
+        
     }
+    */
 }
+

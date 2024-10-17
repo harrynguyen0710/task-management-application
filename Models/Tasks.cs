@@ -13,11 +13,13 @@ namespace task_management.Models
         public string description { get; set; }
         public DateTime startDate = DateTime.Now;
         public DateTime dueDate = DateTime.Now;
-        [Required(ErrorMessage = "Please select priority mode")]
+        [Required(ErrorMessage = "Please select sstatus mode")]
+        public string status { get; set; }
+    [Required(ErrorMessage = "Please select priority mode")]
         public string priority { get; set; }
         [ForeignKey("User")]
         public string userId { get; set; }
         public Users User { get ; set; }
-       
+        public object Status { get; internal set; }
     }
 }

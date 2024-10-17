@@ -22,10 +22,11 @@ builder.Services.AddScoped<EmailService>(provider => new EmailService(
 
 // Add services to the container.
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
-
+builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ProjectService>();
 builder.Services.AddScoped<IdentityService>();
+builder.Services.AddScoped<TaskService>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("TaskApplication"))
@@ -68,7 +69,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 
-
+/*
 using (var scope = app.Services.CreateScope())
 {
     var roleManger = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
@@ -80,7 +81,7 @@ using (var scope = app.Services.CreateScope())
             await roleManger.CreateAsync(new IdentityRole(role));
     }
 }
-
+*/
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
