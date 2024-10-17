@@ -12,3 +12,4 @@ namespace task_management.IRepositories
         void Update(TEntity entity);
     }
 }
+

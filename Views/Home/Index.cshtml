@@ -1,8 +1,34 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@model DashboardViewModel
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Organization Dashboard</h1>
+    <p class="text-center">Get an overview of your organization's tasks and employees.</p>
+
+    <div class="d-flex justify-content-around mb-4">
+        <div class="card bg-light">
+            <div class="card-body text-center">
+                <h5 class="card-title">Total Tasks</h5>
+                <p class="card-text display-4">@Model.TotalTasks</p>
+            </div>
+        </div>
+        <div class="card bg-light">
+            <div class="card-body text-center">
+                <h5 class="card-title">Completed Tasks</h5>
+                <p class="card-text display-4">@Model.CompletedTasks</p>
+            </div>
+        </div>
+        <div class="card bg-light">
+            <div class="card-body text-center">
+                <h5 class="card-title">Completion Rate</h5>
+                <p class="card-text display-4">@Model.CompletionRate.ToString("F2")%</p>
+            </div>
+        </div>
+        <div class="card bg-light">
+            <div class="card-body text-center">
+                <h5 class="card-title">Total Employees</h5>
+                <p class="card-text display-4">@Model.TotalEmployees</p>
+            </div>
+        </div>
+    </div>
 </div>
+
