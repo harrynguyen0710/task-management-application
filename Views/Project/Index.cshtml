@@ -1,28 +1,56 @@
-﻿@model IEnumerable<Project>
+﻿@model IEnumerable<task_management.Models.Project>
 
-<table class="w-full text-sm text-left text-gray-500">
-    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-        <tr>
-            <th class="px-6 py-3">Project Name</th>
-            <th class="px-6 py-3">Status</th>
-            <th class="px-6 py-3">Start Date</th>
-            <th class="px-6 py-3">Organization</th>
-            <th class="px-6 py-3"></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var project in Model)
-        {
-            <tr class="bg-white border-b hover:bg-gray-50">
-                <td class="px-6 py-4">@project.name</td>
-                <td class="px-6 py-4">@project.status</td>
-                <td class="px-6 py-4">@project.startDate.ToShortDateString()</td>
-                <td class="px-6 py-4">
-                    <button class="text-red-500 hover:text-red-700" onclick="confirmDelete(@project.projectId)">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </td>
+<h2 class="text-2xl font-bold mb-6">Projects</h2>
+
+<div class="d-flex justify-content-between mb-4">
+    <a asp-action="Create" class="btn btn-primary">
+        Create New Project
+    </a>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-hover text-center">
+        <thead class="table-light">
+            <tr>
+                <th>Project Name</th>
+                <th>Status</th>
+                <th>Start Date</th>
+                <th>Organization</th>
+                <th>Actions</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var project in Model)
+            {
+                <tr>
+                    <td>@project.name</td>
+                    <td>
+                        @{
+                            string badgeClass = project.status switch
+                            {
+                                "Not Started" => "bg-secondary",  
+                                "In Progress" => "bg-primary",     
+                                "Completed" => "bg-warning",       
+                                _ => "bg-light"                    
+                            };
+                        }
+                        <span class="badge @badgeClass">
+                            @project.status
+                        </span>
+                    </td>
+                    <td>@project.startDate.ToShortDateString()</td>
+                    <td>@(project.Organization != null ? project.Organization.name : "No Organization")</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@project.projectId" class="text-decoration-none text-primary" title="Edit">
+                            Edit
+                        </a>
+                        |
+                        <a asp-action="Details" asp-route-id="@project.projectId" class="text-decoration-none text-info" title="Details">
+                            Details
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
