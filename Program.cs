@@ -26,6 +26,12 @@ builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ProjectService>();
 builder.Services.AddScoped<IdentityService>();
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<TaskService>(); 
+builder.Services.AddScoped<IProjectAssignment, ProjectAssignmentRepository>();
+builder.Services.AddScoped<ITaskRepository, TaskRepository>();
+builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("TaskApplication"))

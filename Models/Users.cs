@@ -11,5 +11,6 @@ namespace task_management.Models
         public ICollection<Tasks> Tasks { get; set; }
         public ICollection<ProjectAssignment> ProjectAssignments { get; set; }
 
+
     }
 }

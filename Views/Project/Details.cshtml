@@ -1,52 +1,113 @@
-﻿@model task_management.Models.Project
-
+﻿@model task_management.ViewModels.ProjectDetails;
 @{
     ViewData["Title"] = "Project Details";
 }
 
 <h1>Project Details</h1>
 
-<div>
-    <h4>Project</h4>
-    <hr />
-    <div>
-        <h5>Name</h5>
-        <p>@Model.name</p>
-    </div>
+<div class="card mb-4">
+    <div class="card-body">
+        <h4 class="card-title">@Model.Project.name</h4>
+        <hr />
+        <div>
+            <h5>Description</h5>
+            <p>@Model.Project.description</p>
+        </div>
 
-    <div>
-        <h5>Description</h5>
-        <p>@Model.description</p>
-    </div>
+        <div>
+            <h5>Start Date</h5>
+            <p>@Model.Project.startDate.ToString("d")</p>
+        </div>
 
-    <div>
-        <h5>Start Date</h5>
-        <p>@Model.startDate.ToString("d")</p>
+        <div>
+            <h5>Status</h5>
+            @{
+                string badgeClass = Model.Project.status switch
+                {
+                    "Not Started" => "bg-secondary",
+                    "In Progress" => "bg-primary",
+                    "Completed" => "bg-success", // Changed to green for completion
+                    _ => "bg-light"
+                };
+            }
+            <span class="badge @badgeClass">
+                @Model.Project.status
+            </span>
+        </div>
     </div>
+</div>
 
-    <div>
-        <h5>Status</h5>
-        @{
-            string badgeClass = Model.status switch
-            {
-                "Not Started" => "bg-secondary",  
-                "In Progress" => "bg-primary",     
-                "Completed" => "bg-warning",       
-                _ => "bg-light"                    
-            };
+<h3>Add Users to Project</h3>
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="post" asp-action="AddUserToProject" asp-controller="Project">
+            <input type="hidden" name="projectId" value="@Model.Project.projectId" />
+            <div class="form-group">
+                <label for="userSelect">Select User</label>
+                <select id="userSelect" name="userId" class="form-control" required>
+                    <option value="">-- Select a user --</option>
+                    @foreach (var user in ViewBag.AvailableUsers)
+                    {
+                        <option value="@user.Value">@user.Text</option>
+                    }
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Add User</button>
+        </form>
+        @if (ViewData["AddUserMessage"] != null)
+        {
+            <div class="alert alert-info mt-2">@ViewData["AddUserMessage"]</div>
         }
-        <span class="badge @badgeClass">
-            @Model.status
-        </span>
     </div>
+</div>
 
-    <div>
-        <h5>Organization</h5>
-        <p>@(Model.Organization != null ? Model.Organization.name : "No Organization")</p>
-    </div>
+<div>
+    <h4>Joint Staff</h4>
+    <div class="list-group">
+        @foreach (var user in Model.UserRole)
+        {
+            <div class="list-group-item">
+                <p><strong>UserName:</strong> @user.UserName</p>
+                <p><strong>Email:</strong> @user.Email</p>
+                <p><strong>Roles:</strong> @string.Join(", ", user.Roles)</p>
 
-    <div>
-        <a asp-action="Edit" asp-route-id="@Model.projectId" class="btn btn-warning">Edit</a>
-        <a asp-action="Index" class="btn btn-primary">Back to List</a>
+                <!-- Form for removing the user from the project -->
+                <form method="post" asp-action="RemoveUserToProject" asp-controller="Project">
+                    <input type="hidden" name="projectId" value="@Model.Project.projectId" />
+                    <input type="hidden" name="userId" value="@user.Id" />
+                    <button type="submit" class="btn btn-danger">Remove</button>
+                </form>
+            </div>
+        }
     </div>
+</div>
+
+
+<h3>Project Tasks</h3>
+<div class="list-group mb-4">
+    @if (Model.Tasks != null && Model.Tasks.Any())
+    {
+        @foreach (var task in Model.Tasks)
+        {
+            <div class="list-group-item">
+                <h5>@task.name</h5>
+                <p>@task.description</p>
+@*                <p><strong>Start Date:</strong> @task.startDate.ToString("d")</p>
+                <p><strong>Due Date:</strong> @task.dueDate.ToString("d")</p>*@
+                <p><strong>Priority:</strong> @task.priority</p>
+                <p><strong>Assigned To:</strong> @task.User.UserName</p>
+            </div>
+        }
+    }
+    else
+    {
+        <p>No tasks available for this project.</p>
+    }
+</div>
+
+<div class="mt-4">
+    <a asp-action="Edit" asp-route-id="@Model.Project.projectId" class="btn btn-warning">Edit</a>
+    <a asp-action="Index" class="btn btn-primary">Back to List</a>
+    <a asp-controller="Task" asp-action="AddTask" asp-route-projectId="@Model.Project.projectId" class="btn btn-success">Add Task</a>
+
 </div>

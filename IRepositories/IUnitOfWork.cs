@@ -3,6 +3,10 @@
     public interface IUnitOfWork : IDisposable
     {
         IRepository<TEntity> Repository<TEntity>() where TEntity : class;
+        IProjectAssignment ProjectAssignmentRepository { get; }
+        ITaskRepository TaskRepository { get; }
+        IProjectRepository ProjectRepository { get; }
+
         Task<int> CompleteAsync();
     }
 }
