@@ -8,13 +8,24 @@ namespace task_management.Models
         [Key]
         public int taskId { get; set; }
         [Required(ErrorMessage = "Please enter task name")]
+        [Display(Name = "Task name")]
         public string name { get; set; }
+
         [Required(ErrorMessage = "Please enter task description")]
+        [Display(Name = "Description")]
         public string description { get; set; }
-        public DateTime startDate = DateTime.Now;
-        public DateTime dueDate = DateTime.Now;
+
+        [Display(Name = "Start date")]
+        public DateTime startDate { get; set; } = DateTime.Now;
+
+        [Display(Name = "Due date")]
+        public DateTime dueDate { get; set;} = DateTime.Now;
+
         [Required(ErrorMessage = "Please select priority mode")]
+        [Display(Name = "Priority")]
         public string priority { get; set; }
+        public bool isActive { get; set; }
+
         [ForeignKey("User")]
         public string userId { get; set; }
         public Users User { get ; set; }

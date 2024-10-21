@@ -96,6 +96,10 @@
                 <p><strong>Due Date:</strong> @task.dueDate.ToString("d")</p>*@
                 <p><strong>Priority:</strong> @task.priority</p>
                 <p><strong>Assigned To:</strong> @task.User.UserName</p>
+                @*remove a task*@
+                <form>
+                    <button>Remove</button>
+                </form>
             </div>
         }
     }
