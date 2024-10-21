@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Threading.Tasks;
 using task_management.IRepositories;
 using task_management.Models;
 using task_management.Services;
@@ -13,10 +12,10 @@ namespace task_management.Controllers
         private readonly ProjectService _projectService;
         private readonly UserService _userService;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IdentityService _identityService;  
+        private readonly IdentityService _identityService;
         private readonly TaskService _taskService;
 
-        public ProjectController(ProjectService projectService, UserService userService, 
+        public ProjectController(ProjectService projectService, UserService userService,
             IUnitOfWork unitOfWork, IdentityService identityService, TaskService taskService)
         {
             _projectService = projectService;
@@ -92,16 +91,15 @@ namespace task_management.Controllers
             var detailProject = new ProjectDetails()
             {
                 Project = project,
-                UserRole = staffRoles,
+                UserRole = (List<UserRoles>)staffRoles,
                 Tasks = jointTasks
             };
-
+            
             // Populate the ViewBag with available users for the dropdown selection
             ViewBag.AvailableUsers = new SelectList(availableUsers, "Id", "UserName");
-
+            
             return View(detailProject);
         }
-
 
 
         [HttpPost]
