@@ -63,35 +63,44 @@ namespace task_management.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> Details(int id, int pageNumber = 1, int pageSize = 10)
         {
             var project = await _projectService.GetDetailedProject(id);
             if (project == null)
             {
                 return NotFound();
             }
-            // get all joint staff of the project.
+
+            // Fetch team members synchronously (non-async method)
             var teamMembers = _unitOfWork.ProjectAssignmentRepository.GetTeamMembersByProject(id);
 
-            // get role names of them.
-            var staffRoles = await _identityService.GetUsersWithRoles(teamMembers);
+            // Fetch available users asynchronously
+            var availableUsers = await _userService.GetAvailableUsers(id);
 
-            // get involved tasks.
-            var jointTasks = await _taskService.GetTasksInProjects(teamMembers);
+            // Fetch the roles of the team members
+            var staffRolesTask = _identityService.GetUsersWithRoles(teamMembers);
 
+            // Fetch the tasks related to the project, with pagination
+            var jointTasksTask = _taskService.GetTasksInProjects(teamMembers, pageNumber, pageSize);
+
+            // Wait for both tasks (roles and tasks) to complete in parallel
+            var staffRoles = await staffRolesTask;
+            var jointTasks = await jointTasksTask;
+
+            // Prepare the project details model
             var detailProject = new ProjectDetails()
             {
                 Project = project,
                 UserRole = (List<UserRoles>)staffRoles,
                 Tasks = jointTasks
             };
-
-            // Filter users who are not part of the project.
-            var availableUsers = await _userService.GetAvailableUsers(id);
-
+            
+            // Populate the ViewBag with available users for the dropdown selection
             ViewBag.AvailableUsers = new SelectList(availableUsers, "Id", "UserName");
+            
             return View(detailProject);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> AddUserToProject(int projectId, string userId)
@@ -106,5 +115,13 @@ namespace task_management.Controllers
             await _projectService.RemoveUserToProject(projectId, userId);
             return RedirectToAction("Details", new { id = projectId });
         }
+
+        [HttpPatch]
+        public async Task<IActionResult> InActiveProject(Project project)
+        {
+            await _projectService.InActiveProjectAsync(project);
+            return RedirectToAction("Details", new { id = project.projectId });
+        }
+
     }
 }

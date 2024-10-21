@@ -18,5 +18,10 @@ namespace task_management.Repositories
                 .Include(p => p.ProjectAssignments).ThenInclude(u => u.User).FirstOrDefaultAsync();
 
         }
+
+        public void InActive(Project project)
+        {
+            project.isActive = false;
+        }
     }
 }

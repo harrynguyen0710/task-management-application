@@ -39,24 +39,32 @@ namespace task_management.Controllers
             return RedirectToAction("Details", "Project", new { id = taskDetails.projectId });
         }
 
-       /* public async Task<IActionResult> UpdateTask(int projectId)
+        [HttpPatch]
+        public async Task<IActionResult> InActiveTask(TaskDetails taskDetails)
         {
-            var availableUsers = await _userService.GetUsersByProjectId(projectId);
-            ViewBag.AvailableUsers = new SelectList(availableUsers, "Id", "UserName");
-            var taskDetails = new TaskDetails
-            {
-                projectId = projectId,
-            };
-
-            return View(taskDetails);
+            await _taskService.InActiveTaskAsync(taskDetails.Tasks);
+            return RedirectToAction("Details", "Project", new { id = taskDetails.projectId });
         }
 
 
-        [HttpPost]
-        public async Task<IActionResult> UpdateTask()
-        {
-            return RedirectToAction("Details", "Project", new { id = taskDetails.projectId });
-        }*/
+        /* public async Task<IActionResult> UpdateTask(int projectId)
+         {
+             var availableUsers = await _userService.GetUsersByProjectId(projectId);
+             ViewBag.AvailableUsers = new SelectList(availableUsers, "Id", "UserName");
+             var taskDetails = new TaskDetails
+             {
+                 projectId = projectId,
+             };
+
+             return View(taskDetails);
+         }
+
+
+         [HttpPost]
+         public async Task<IActionResult> UpdateTask()
+         {
+             return RedirectToAction("Details", "Project", new { id = taskDetails.projectId });
+         }*/
 
     }
 }

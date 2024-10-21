@@ -44,23 +44,44 @@ namespace task_management.Services
         }
 
         /// <summary>
-        /// Get all task of a project all joint staff id (staff joint project)
+        /// Get all tasks of a project, joint by staff id (staff joint project) with pagination
         /// </summary>
         /// <param name="assignments"></param>
-        /// <returns>A list of tasks</returns>
-        public async Task<IEnumerable<Tasks>> GetTasksInProjects(List<ProjectAssignment> assignments)
+        /// <param name="pageNumber">The page number to fetch</param>
+        /// <param name="pageSize">The number of tasks per page</param>
+        /// <returns>A paginated list of tasks</returns>
+        public async Task<IEnumerable<Tasks>> GetTasksInProjects(List<ProjectAssignment> assignments, int pageNumber, int pageSize)
         {
-            var listOfTasks = new HashSet<Tasks>(); 
+            var listOfTasks = new HashSet<Tasks>();
 
-            // Collect all tasks for each user in parallel 
-            var taskLists = await Task.WhenAll(assignments.Select(a => GetTasksByUserId(a.userId)));
+            // Collect tasks for each user sequentially to avoid DbContext concurrency issues
+            foreach (var assignment in assignments)
+            {
+                var userTasks = await GetTasksByUserId(assignment.userId);
+                listOfTasks.UnionWith(userTasks);
+            }
 
-            // Flatten the taskLists and add all tasks to the HashSet 
-            listOfTasks.UnionWith(taskLists.SelectMany(t => t));
+            // Apply pagination
+            var paginatedTasks = listOfTasks
+                                    .Skip((pageNumber - 1) * pageSize)
+                                    .Take(pageSize)
+                                    .ToList();
 
             await _unitOfWork.CompleteAsync();
-            return listOfTasks;
+            return paginatedTasks;
         }
+
+
+        public async Task InActiveTaskAsync(Tasks task)
+        {
+            _unitOfWork.TaskRepository.InActive(task);
+            await _unitOfWork.CompleteAsync();
+        }
+
+     /*   public async Task GetTasksByUserId(string userId)
+        {
+
+        }*/
 
         public async Task<Tasks> GetTaskByIdAsync(int id)
         {   

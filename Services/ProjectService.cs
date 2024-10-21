@@ -79,6 +79,11 @@ namespace task_management.Services
             await _unitOfWork.CompleteAsync();
         }
 
+        public async Task InActiveProjectAsync(Project project)
+        {
+            _unitOfWork.ProjectRepository.InActive(project);
+            await _unitOfWork.CompleteAsync();
+        }
 
 
     }

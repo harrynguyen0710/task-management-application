@@ -5,7 +5,7 @@ using task_management.Models;
 
 namespace task_management.Repositories
 {
-    public class TaskRepository : Repository<Task>, ITaskRepository
+    public class TaskRepository : Repository<Tasks>, ITaskRepository
     {
         public TaskRepository(ApplicationDbContext context) : base(context)
         {
@@ -19,6 +19,11 @@ namespace task_management.Repositories
         public  IEnumerable<Tasks> GetTasksByUserId(string userId)
         {
             return  _context.Tasks.Where(u => u.userId == userId).ToList();
+        }
+
+        public void InActive(Tasks task)
+        {
+            task.isActive = false;
         }
     }
 }
