@@ -1,8 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using task_management.IRepositories;
 using task_management.Models;
-using task_management.IRepositories;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace task_management.Services
 {
@@ -33,6 +30,7 @@ namespace task_management.Services
 
         public async Task UpdateProjectAsync(Project project)
         {
+            project.organizationId = 1;
             _unitOfWork.Repository<Project>().Update(project);
             await _unitOfWork.CompleteAsync();
         }
@@ -47,7 +45,7 @@ namespace task_management.Services
 
         public async Task<Project> GetDetailedProject(int projectId)
         {
-            var teamMembers =  _unitOfWork.ProjectAssignmentRepository.GetTeamMembersByProject(projectId);
+            var teamMembers = _unitOfWork.ProjectAssignmentRepository.GetTeamMembersByProject(projectId);
             var staffRoles = await _identityService.GetUsersWithRoles(teamMembers);
             var project = await _unitOfWork.ProjectRepository.GetDetailedProject(projectId);
             return project;
@@ -63,7 +61,7 @@ namespace task_management.Services
             return projects;
         }
 
-        public async Task AddUserToProject (int projectId, string userId)
+        public async Task AddUserToProject(int projectId, string userId)
         {
             var newAssignment = new ProjectAssignment
             {
@@ -77,7 +75,7 @@ namespace task_management.Services
         public async Task RemoveUserToProject(int projectId, string userId)
         {
             var assignment = new ProjectAssignment() { projectId = projectId, userId = userId };
-            _unitOfWork.Repository<ProjectAssignment>().Remove(assignment);   
+            _unitOfWork.Repository<ProjectAssignment>().Remove(assignment);
             await _unitOfWork.CompleteAsync();
         }
 
