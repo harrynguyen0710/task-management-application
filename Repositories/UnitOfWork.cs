@@ -10,10 +10,16 @@ namespace task_management.Repositories
     {
         private readonly ApplicationDbContext _context;
         private readonly Dictionary<Type, object> _repositories = new();
+        private IProjectAssignment _projectManagement;
+        private ITaskRepository _taskRepository;
+        private IProjectRepository _projectRepository;
 
-        public UnitOfWork(ApplicationDbContext context)
+        public UnitOfWork(ApplicationDbContext context, IProjectAssignment projectManagement, ITaskRepository taskRepository, IProjectRepository projectRepository)
         {
             _context = context;
+            _projectManagement = projectManagement;
+            _taskRepository = taskRepository;
+            _projectRepository = projectRepository;
         }
 
         public IRepository<TEntity> Repository<TEntity>() where TEntity : class
@@ -27,6 +33,31 @@ namespace task_management.Repositories
 
             return (IRepository<TEntity>)_repositories[type];
         }
+
+        public IProjectAssignment ProjectAssignmentRepository
+        {
+            get
+            {
+                return _projectManagement ??= new ProjectAssignmentRepository(_context);
+            }
+        }
+
+        public ITaskRepository TaskRepository
+        {
+            get
+            {
+                return _taskRepository ??= new TaskRepository(_context);    
+            }
+        }
+
+        public IProjectRepository ProjectRepository
+        {
+            get
+            {
+                return _projectRepository ??= new ProjectRepository(_context);
+            }
+        }
+
 
         public async Task<int> CompleteAsync()
         {

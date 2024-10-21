@@ -1,0 +1,24 @@
+﻿using System.Data.Entity;
+using task_management.Data;
+using task_management.IRepositories;
+using task_management.Models;
+
+namespace task_management.Repositories
+{
+    public class TaskRepository : Repository<Task>, ITaskRepository
+    {
+        public TaskRepository(ApplicationDbContext context) : base(context)
+        {
+        }
+
+        public async Task<Tasks> GetTaskById(int id)
+        {
+            return await _context.Tasks.Include(u => u.User).Where(t => t.taskId == id).FirstOrDefaultAsync();  
+        }
+
+        public  IEnumerable<Tasks> GetTasksByUserId(string userId)
+        {
+            return  _context.Tasks.Where(u => u.userId == userId).ToList();
+        }
+    }
+}

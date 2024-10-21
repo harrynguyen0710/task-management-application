@@ -19,5 +19,7 @@ namespace task_management.Services
             var organizationRepository = _unitOfWork.Repository<Organization>();
             return await organizationRepository.GetAllAsync();
         }
+
+        //public async Task UpdateOrganization(
     }
 }

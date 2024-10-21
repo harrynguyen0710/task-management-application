@@ -1,0 +1,63 @@
+﻿@model task_management.ViewModels.TaskDetails
+
+@{
+    ViewData["Title"] = "Add Task";
+}
+
+<h1>Add Task</h1>
+
+<form asp-action="AddTask" method="post">
+    <input type="hidden" asp-for="@Model.projectId" />
+
+    <div class="form-group">
+        <label asp-for="@Model.Tasks.name" class="control-label"></label>
+        <input asp-for="@Model.Tasks.name" class="form-control" />
+        <span asp-validation-for="@Model.Tasks.name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="@Model.Tasks.description" class="control-label"></label>
+        <textarea asp-for="@Model.Tasks.description" class="form-control"></textarea>
+        <span asp-validation-for="@Model.Tasks.description" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="@Model.Tasks.startDate" class="control-label"></label>
+        <input asp-for="@Model.Tasks.startDate" class="form-control" type="date" />
+        <span asp-validation-for="@Model.Tasks.startDate" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="@Model.Tasks.dueDate" class="control-label"></label>
+        <input asp-for="@Model.Tasks.dueDate" class="form-control" type="date" />
+        <span asp-validation-for="@Model.Tasks.dueDate" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="@Model.Tasks.priority" class="control-label"></label>
+        <select asp-for="@Model.Tasks.priority" class="form-control">
+            <option value="">-- Select Priority --</option>
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+        </select>
+        <span asp-validation-for="@Model.Tasks.priority" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="userSelect" class="control-label">Select User</label>
+        <select asp-for="@Model.Tasks.userId" class="form-control" asp-items="ViewBag.AvailableUsers">
+            <option value="">-- Select User --</option>
+        </select>
+        <span asp-validation-for="@Model.Tasks.userId" class="text-danger"></span>
+    </div>
+
+
+    <button type="submit" class="btn btn-primary">Create Task</button>
+</form>
+
+<a asp-action="Details" asp-controller="Project" asp-route-id="@Model.projectId" class="btn btn-secondary">Back to Project</a>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using task_management.Models;
+using task_management.ViewModels;
 
 namespace task_management.Services
 {
@@ -57,6 +58,29 @@ namespace task_management.Services
         {
             await _signInManager.SignOutAsync();
         }
+
+        public async Task<IEnumerable<UserRoles>> GetUsersWithRoles(List<ProjectAssignment> jointUsers)
+        {
+            var usersWithRoles = new List<UserRoles>();
+
+            foreach (var user in jointUsers)
+            {
+                var staff = await _userManager.FindByIdAsync(user.userId);
+                if (staff != null)
+                {
+                    var roles = await _userManager.GetRolesAsync(staff);
+                    usersWithRoles.Add(new UserRoles
+                    {
+                        Id = staff.Id,
+                        UserName = staff.UserName,
+                        Email = staff.Email,
+                        Roles = roles.ToList() // Convert to List<string>
+                    });
+                }
+            }
+            return usersWithRoles;
+        }
+
 
         public async Task SendPasswordResetLink(string email)
         {

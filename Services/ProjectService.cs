@@ -9,73 +9,79 @@ namespace task_management.Services
     public class ProjectService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private IdentityService _identityService;
 
-        public ProjectService(IUnitOfWork unitOfWork)
+        public ProjectService(IUnitOfWork unitOfWork, IdentityService identityService)
         {
             _unitOfWork = unitOfWork;
+            _identityService = identityService;
         }
 
         public async Task<IEnumerable<Project>> GetAllProjectsAsync()
         {
-            var projectRepository = _unitOfWork.Repository<Project>();
-            var organizationRepository = _unitOfWork.Repository<Organization>();
-
-            // Get all projects
-            var projects = await projectRepository.GetAllAsync();
-
-            // Get all organizations
-            var organizations = await organizationRepository.GetAllAsync();
-
-            // Assign organization name to each project
-            foreach (var project in projects)
-            {
-                var organization = organizations.FirstOrDefault(o => o.organizationId == project.organizationId);
-                project.Organization = organization; // Assign organization to project
-            }
-
+            var projects = await _unitOfWork.Repository<Project>().GetAllAsync();
             return projects;
         }
 
-        public async Task<SelectList> GetOrganizationsSelectListAsync()
-        {
-            var organizationRepository = _unitOfWork.Repository<Organization>();
-            var organizations = await organizationRepository.GetAllAsync();
-            return new SelectList(organizations, "organizationId", "name");
-        }
 
         public async Task AddProjectAsync(Project project)
         {
-            var projectRepository = _unitOfWork.Repository<Project>();
-            projectRepository.Add(project);
+            project.organizationId = 1;
+            _unitOfWork.Repository<Project>().Add(project);
             await _unitOfWork.CompleteAsync();
         }
 
         public async Task UpdateProjectAsync(Project project)
         {
-            var projectRepository = _unitOfWork.Repository<Project>();
-            projectRepository.Update(project);
+            _unitOfWork.Repository<Project>().Update(project);
             await _unitOfWork.CompleteAsync();
         }
 
         public async Task<Project> GetProjectByIdAsync(int id)
         {
-            var projectRepository = _unitOfWork.Repository<Project>();
-            return await projectRepository.GetByIdAsync(id);
-        }
-        public async Task<Project> GetProjectDetailsAsync(int id)
-        {
-            var projectRepository = _unitOfWork.Repository<Project>();
-            var organizationRepository = _unitOfWork.Repository<Organization>();
+            var projects = await _unitOfWork.Repository<Project>().GetByIdAsync(id);
+            await _unitOfWork.CompleteAsync();
+            return projects;
 
-            var project = await projectRepository.GetByIdAsync(id);
-            if (project != null)
-            {
-                
-                var organizations = await organizationRepository.GetAllAsync();
-                var organization = organizations.FirstOrDefault(o => o.organizationId == project.organizationId);
-                project.Organization = organization; 
-            }
+        }
+
+        public async Task<Project> GetDetailedProject(int projectId)
+        {
+            var teamMembers =  _unitOfWork.ProjectAssignmentRepository.GetTeamMembersByProject(projectId);
+            var staffRoles = await _identityService.GetUsersWithRoles(teamMembers);
+            var project = await _unitOfWork.ProjectRepository.GetDetailedProject(projectId);
             return project;
         }
+
+        public async Task<IEnumerable<Project>> GetProjectsByUserId(string userId)
+        {
+            var projectIdList = _unitOfWork.ProjectAssignmentRepository.GetProjectsByUserId(userId);
+
+            var projects = await Task.WhenAll(projectIdList
+                .Select(async project => await _unitOfWork.Repository<Project>().GetByIdAsync(project.projectId)));
+            await _unitOfWork.CompleteAsync();
+            return projects;
+        }
+
+        public async Task AddUserToProject (int projectId, string userId)
+        {
+            var newAssignment = new ProjectAssignment
+            {
+                projectId = projectId,
+                userId = userId
+            };
+            _unitOfWork.Repository<ProjectAssignment>().Add(newAssignment);
+            await _unitOfWork.CompleteAsync();
+        }
+
+        public async Task RemoveUserToProject(int projectId, string userId)
+        {
+            var assignment = new ProjectAssignment() { projectId = projectId, userId = userId };
+            _unitOfWork.Repository<ProjectAssignment>().Remove(assignment);   
+            await _unitOfWork.CompleteAsync();
+        }
+
+
+
     }
 }
