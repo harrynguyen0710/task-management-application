@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Threading.Tasks;
 using task_management.IRepositories;
 using task_management.Models;
 using task_management.Services;
@@ -64,7 +63,7 @@ namespace task_management.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Details(int id, int pageNumber = 1, int pageSize = 5)
+        public async Task<IActionResult> Details(int id, int pageNumber = 1, int pageSize = 5, int selectedTaskId = 0)
         {
             var project = await _projectService.GetDetailedProject(id);
             if (project == null)
@@ -82,11 +81,14 @@ namespace task_management.Controllers
             // Fetch the paginated tasks
             var jointTasks = await _taskService.GetTasksInProjects(teamMembers, pageNumber, pageSize);
 
+            var selectedTask = jointTasks.FirstOrDefault(t => t.taskId == selectedTaskId);
+
             var detailProject = new ProjectDetails()
             {
                 Project = project,
                 UserRole = staffRoles,
                 Tasks = jointTasks,
+                SelectedTask = selectedTask,
                 PageNumber = pageNumber,
                 PageSize = pageSize,
                 TotalTasks = totalTasks

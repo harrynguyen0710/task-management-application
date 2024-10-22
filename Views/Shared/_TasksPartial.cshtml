@@ -41,9 +41,19 @@
                 </div>
                 <div>@task.User.fullName</div>
                 <div>
-                    <a asp-controller="Task" asp-action="Edit" asp-route-id="@task.taskId" class="text-blue-500"><i class="fas fa-edit"></i></a>
+                    <button class="text-blue-600 hover:text-blue-900"
+                            onclick="openModal('@task.name',
+                               '@task.startDate.ToString("dd/MM/yyyy")',
+                               '@task.status',
+                               '@task.priority',
+                               '@task.User.fullName',
+                               '@task.dueDate.ToString("dd/MM/yyyy")',
+                               '@task.description')">
+                        <i class="fas fa-edit"></i>
+                    </button>
                     <a asp-controller="Task" asp-action="Delete" asp-route-id="@task.taskId" class="text-red-500"><i class="fas fa-trash-alt"></i></a>
                 </div>
+
             </div>
         }
 
