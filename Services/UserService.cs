@@ -48,6 +48,8 @@ namespace task_management.Services
 
             // Filter users who are not part of the project
             var availableUsers = users.Where(u => !projectUsers.Any(pu => pu.Id == u.Id)).ToList();
+            
+            await _unitOfWork.CompleteAsync();
 
             return availableUsers;
         }

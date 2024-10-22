@@ -10,6 +10,10 @@ namespace task_management.Models
         [Display(Name = "Full name")]
         public string fullName { get; set; }
 
+        [Required(ErrorMessage = "Please enter address")]
+        [Display(Name = "Address")]
+        public string address { get; set; }
+
         [ForeignKey("Organization")]
         public int organizationId { get; set; }
         public Organization Organization { get; set; }

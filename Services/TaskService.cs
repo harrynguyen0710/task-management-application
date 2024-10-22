@@ -71,6 +71,17 @@ namespace task_management.Services
             return paginatedTasks;
         }
 
+        public int GetTotalTasks(int projectId)
+        {
+            var assignments = _unitOfWork.ProjectAssignmentRepository.GetTeamMembersByProject(projectId);
+            var count = 0;
+            foreach(var assignment in assignments)
+            {
+                count += _unitOfWork.TaskRepository.GetTotalTask(assignment.userId);
+            }
+            return count;
+        }
+
 
         public async Task InActiveTaskAsync(Tasks task)
         {

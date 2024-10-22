@@ -24,6 +24,10 @@ namespace task_management.Models
         [Required(ErrorMessage = "Please select priority mode")]
         [Display(Name = "Priority")]
         public string priority { get; set; }
+        
+        [Required(ErrorMessage = "Please select status mode")]
+        [Display(Name = "Status")]
+        public string status { get; set; }
         public bool isActive { get; set; }
 
         [ForeignKey("User")]

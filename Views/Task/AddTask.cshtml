@@ -34,6 +34,17 @@
     </div>
 
     <div class="form-group">
+        <label asp-for="@Model.Tasks.status" class="control-label"></label>
+        <select asp-for="@Model.Tasks.status" class="form-control">
+            <option value="">-- Select Status --</option>
+            <option value="Due">Due</option>
+            <option value="Completed">Completed</option>
+            <option value="In Progress">In Progress</option>
+        </select>
+        <span asp-validation-for="@Model.Tasks.status" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
         <label asp-for="@Model.Tasks.priority" class="control-label"></label>
         <select asp-for="@Model.Tasks.priority" class="form-control">
             <option value="">-- Select Priority --</option>
