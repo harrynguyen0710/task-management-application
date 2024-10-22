@@ -7,5 +7,7 @@ namespace task_management.IRepositories
     {
         public List<ProjectAssignment> GetTeamMembersByProject(int id);
         public List<ProjectAssignment> GetProjectsByUserId(string userId); 
+/*        public Task<int> GetTotal
+*/    
     }
 }

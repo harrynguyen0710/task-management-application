@@ -72,7 +72,7 @@ namespace task_management.Services
                     usersWithRoles.Add(new UserRoles
                     {
                         Id = staff.Id,
-                        UserName = staff.UserName,
+                        fullName = staff.fullName,
                         Email = staff.Email,
                         Roles = roles.ToList() // Convert to List<string>
                     });

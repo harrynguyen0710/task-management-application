@@ -21,6 +21,16 @@ namespace task_management.Repositories
             return  _context.Tasks.Where(u => u.userId == userId).ToList();
         }
 
+        public int GetTotalTask(string userId)
+        {
+            return _context.Tasks.Where(u => u.userId == userId).Count();
+        }
+
+        //public async Task<int> GetTotalTask(int projectId)
+        //{
+        //    return _context.Tasks.Where(t => t.pr)
+        //}
+
         public void InActive(Tasks task)
         {
             task.isActive = false;
