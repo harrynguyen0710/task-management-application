@@ -20,6 +20,12 @@ namespace task_management.Models
         public ICollection<Tasks> Tasks { get; set; }
         public ICollection<ProjectAssignment> ProjectAssignments { get; set; }
 
+        [Required(ErrorMessage = "Please upload an user avatar")]
+        public string PhotoUrl { get; set; }
+
+        [NotMapped]
+        public IFormFile ProfilePhoto { get; set; }
+
 
     }
 }
