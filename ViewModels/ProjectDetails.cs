@@ -7,6 +7,7 @@ namespace task_management.ViewModels
         public Project Project { get; set; }
         public List<UserRoles> UserRole { get; set; }
         public IEnumerable<Tasks> Tasks { get; set; }
+        public Tasks SelectedTask { get; set; }
 
         // Pagination properties
         public int PageNumber { get; set; }
