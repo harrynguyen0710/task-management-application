@@ -16,7 +16,8 @@ namespace task_management.Repositories
         private IUserRepository _userRepository;
 
         public UnitOfWork(ApplicationDbContext context, IProjectAssignment projectManagement, 
-            ITaskRepository taskRepository, IProjectRepository projectRepository, IUserRepository userRepository)
+            ITaskRepository taskRepository, IProjectRepository projectRepository, 
+            IUserRepository userRepository)
         {
             _context = context;
             _projectManagement = projectManagement;
@@ -69,6 +70,7 @@ namespace task_management.Repositories
             }
         }
 
+    
 
         public async Task<int> CompleteAsync()
         {

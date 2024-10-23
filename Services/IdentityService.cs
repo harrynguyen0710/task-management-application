@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using task_management.IRepositories;
 using task_management.Models;
 using task_management.ViewModels;
 
@@ -6,25 +7,31 @@ namespace task_management.Services
 {
     public class IdentityService
     {
+        const string FOLDER_NAME = "images";
         private readonly UserManager<Users> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly SignInManager<Users> _signInManager;
         private readonly EmailService _emailService;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IImageRepository _imageRepository;
 
-        public IdentityService(UserManager<Users> userManager, RoleManager<IdentityRole> roleManager, SignInManager<Users> signInManager, EmailService emailService, IHttpContextAccessor httpContextAccessor)
+        public IdentityService(UserManager<Users> userManager, RoleManager<IdentityRole> roleManager
+            , SignInManager<Users> signInManager, EmailService emailService, IHttpContextAccessor httpContextAccessor
+            , IImageRepository imageRepository)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
             _emailService = emailService;
             _httpContextAccessor = httpContextAccessor;
+            _imageRepository = imageRepository;
         }
 
         public async Task CreateAccount(Users user)
         {
             var password = Environment.GetEnvironmentVariable("password");
             user.organizationId = 1;
+            user.PhotoUrl = _imageRepository.GetPhotoFileName(user.ProfilePhoto, FOLDER_NAME);
 
             user.UserName = user.Email;
             var result = await _userManager.CreateAsync(user, password);

@@ -32,6 +32,7 @@ builder.Services.AddScoped<IProjectAssignment, ProjectAssignmentRepository>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();  
+builder.Services.AddScoped<IImageRepository, ImageRepository>();
 
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
