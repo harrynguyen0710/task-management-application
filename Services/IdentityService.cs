@@ -25,6 +25,7 @@ namespace task_management.Services
         {
             var password = Environment.GetEnvironmentVariable("password");
             user.organizationId = 1;
+
             user.UserName = user.Email;
             var result = await _userManager.CreateAsync(user, password);
             if (result.Succeeded)
