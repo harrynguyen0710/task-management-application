@@ -6,6 +6,7 @@
         IProjectAssignment ProjectAssignmentRepository { get; }
         ITaskRepository TaskRepository { get; }
         IProjectRepository ProjectRepository { get; }
+        IUserRepository UserRepository { get; }
 
         Task<int> CompleteAsync();
     }

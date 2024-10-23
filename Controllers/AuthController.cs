@@ -10,11 +10,17 @@ namespace task_management.Controllers
         private readonly IdentityService _authService;
         private readonly UserManager<Users> _userManager;
         private readonly EmailService _emailService;
-        public AuthController(IdentityService authService, UserManager<Users> userManager, EmailService emailService)
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserService _userSerivce;
+
+        public AuthController(IdentityService authService, UserManager<Users> userManager, 
+            EmailService emailService, RoleManager<IdentityRole> roleManager, UserService userService)
         {
             _authService = authService;
             _userManager = userManager;
             _emailService = emailService;
+            _roleManager = roleManager; 
+            _userSerivce = userService;
         }
         public IActionResult Index()
         {
@@ -97,9 +103,33 @@ namespace task_management.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAccount(Users user)
         {
+            var email = user.Email?.Trim();
+            var username = user.UserName?.Trim();
+            var phoneNumber = user.PhoneNumber?.Trim();
+
+            if (_userSerivce.IsEmailExisted(email))
+            {
+                ModelState.AddModelError("Email", "Email already exists.");
+                return View(user);
+            }
+
+            if (_userSerivce.IsUserNameExisted(username))
+            {
+                ModelState.AddModelError("UserName", "Username already exists.");
+                return View(user);
+            }
+
+            if (_userSerivce.IsPhoneNumberExisted(phoneNumber))
+            {
+                ModelState.AddModelError("PhoneNumber", "Phone number already exists.");
+                return View(user);
+            }
+
             await _authService.CreateAccount(user);
-            return RedirectToAction("Index", "Auth");
+            return RedirectToAction("Index", "Home");
         }
+
+
         public IActionResult Login()
         {
             return View();
@@ -113,7 +143,7 @@ namespace task_management.Controllers
                 return RedirectToAction("Index", "Auth");
             }
             ModelState.AddModelError(string.Empty, "Password or Email is incorrect. Please re-enter!");
-            return View();
+            return RedirectToAction("Index", "Home");
         }
 
         public async Task<IActionResult> Logout()

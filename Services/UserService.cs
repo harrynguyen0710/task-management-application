@@ -39,6 +39,22 @@ namespace task_management.Services
             return teamMembers;
         }
 
+        public bool IsEmailExisted(string email)
+        {
+            return _unitOfWork.UserRepository.IsEmailExisted(email);
+        }
+
+        public bool IsPhoneNumberExisted(string phoneNumber) 
+        {
+            return _unitOfWork.UserRepository.IsPhoneNumberExisted(phoneNumber);    
+        }
+
+        public bool IsUserNameExisted(string userName) 
+        {
+            return _unitOfWork.UserRepository.IsUserNameExisted(userName);
+        }
+
+
 
         public async Task<IEnumerable<Users>> GetAvailableUsers(int projectId)
         {

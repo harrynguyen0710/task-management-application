@@ -13,12 +13,15 @@ namespace task_management.Repositories
         private IProjectAssignment _projectManagement;
         private ITaskRepository _taskRepository;
         private IProjectRepository _projectRepository;
+        private IUserRepository _userRepository;
 
-        public UnitOfWork(ApplicationDbContext context, IProjectAssignment projectManagement, ITaskRepository taskRepository, IProjectRepository projectRepository)
+        public UnitOfWork(ApplicationDbContext context, IProjectAssignment projectManagement, 
+            ITaskRepository taskRepository, IProjectRepository projectRepository, IUserRepository userRepository)
         {
             _context = context;
             _projectManagement = projectManagement;
             _taskRepository = taskRepository;
+            _userRepository = userRepository;
             _projectRepository = projectRepository;
         }
 
@@ -55,6 +58,14 @@ namespace task_management.Repositories
             get
             {
                 return _projectRepository ??= new ProjectRepository(_context);
+            }
+        }
+
+        public IUserRepository UserRepository
+        {
+            get
+            {
+                return _userRepository ??= new UserRepository(_context);
             }
         }
 

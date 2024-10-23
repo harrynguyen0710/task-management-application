@@ -22,28 +22,49 @@
                     <div class="w-3/4 space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700" for="fullname">Full Name</label>
-                            <input class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" id="fullname" name="fullname" type="text" />
+                            <input class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                   id="fullname"
+                                   name="fullname"
+                                   type="text"
+                                   value="@(Model?.fullName ?? string.Empty)" />
+                            <span class="text-red-500 text-sm">@ViewData.ModelState["fullname"]?.Errors.FirstOrDefault()?.ErrorMessage</span>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700" for="email">Email</label>
-                            <input class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" id="email" name="email" type="email" />
+                            <input class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                   id="Email"
+                                   name="Email"
+                                   type="text"
+                                   value="@(Model?.Email ?? string.Empty)" />                           
+                            <span class="text-red-500 text-sm">@ViewData.ModelState["email"]?.Errors.FirstOrDefault()?.ErrorMessage</span>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700" for="address">Address</label>
-                            <input class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" id="address" name="address" type="text" />
+                            <input class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                   id="address"
+                                   name="address"
+                                   type="text"
+                                   value="@(Model?.address ?? string.Empty)" />                              
+                            <span class="text-red-500 text-sm">@ViewData.ModelState["address"]?.Errors.FirstOrDefault()?.ErrorMessage</span>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700" for="phone">Phone Number</label>
-                            <input class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" id="phone" name="phone" type="tel" />
+                            <input class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                   id="PhoneNumber"
+                                   name="PhoneNumber"
+                                   type="text"
+                                   value="@(Model?.PhoneNumber ?? string.Empty)" />                               
+                            <span class="text-red-500 text-sm">@ViewData.ModelState["phone"]?.Errors.FirstOrDefault()?.ErrorMessage</span>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700" for="role">Role</label>
                             <select class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" id="role" name="role">
-                                <option value="" disabled selected>Choose your role</option>
+                                <option value="" disabled selected>Choose account role</option>
                                 <option value="admin">Admin</option>
                                 <option value="manager">Manager</option>
-                                <option value="employee">Employee</option>
+                                <option value="staff">Staff</option>
                             </select>
+                            <span class="text-red-500 text-sm">@ViewData.ModelState["role"]?.Errors.FirstOrDefault()?.ErrorMessage</span>
                         </div>
                     </div>
                 </div>
