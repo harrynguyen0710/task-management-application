@@ -1,8 +1,5 @@
 ﻿using task_management.Data;
 using task_management.IRepositories;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace task_management.Repositories
 {
@@ -15,8 +12,8 @@ namespace task_management.Repositories
         private IProjectRepository _projectRepository;
         private IUserRepository _userRepository;
 
-        public UnitOfWork(ApplicationDbContext context, IProjectAssignment projectManagement, 
-            ITaskRepository taskRepository, IProjectRepository projectRepository, 
+        public UnitOfWork(ApplicationDbContext context, IProjectAssignment projectManagement,
+            ITaskRepository taskRepository, IProjectRepository projectRepository,
             IUserRepository userRepository)
         {
             _context = context;
@@ -50,7 +47,7 @@ namespace task_management.Repositories
         {
             get
             {
-                return _taskRepository ??= new TaskRepository(_context);    
+                return _taskRepository ??= new TaskRepository(_context);
             }
         }
 
@@ -70,7 +67,7 @@ namespace task_management.Repositories
             }
         }
 
-    
+
 
         public async Task<int> CompleteAsync()
         {

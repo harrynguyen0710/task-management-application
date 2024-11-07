@@ -4,6 +4,6 @@
     {
         public bool IsEmailExisted(string email);
         public bool IsUserNameExisted(string userName);
-        public bool IsPhoneNumberExisted(string phoneNumber);   
+        public bool IsPhoneNumberExisted(string phoneNumber);
     }
 }

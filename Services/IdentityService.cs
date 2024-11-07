@@ -82,7 +82,8 @@ namespace task_management.Services
                         Id = staff.Id,
                         fullName = staff.fullName,
                         Email = staff.Email,
-                        Roles = roles.ToList() // Convert to List<string>
+                        Roles = roles.ToList(), // Convert to List<string>
+                        ImageUrl = staff.PhotoUrl
                     });
                 }
             }
