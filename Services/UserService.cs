@@ -85,6 +85,32 @@ namespace task_management.Services
 
             return result;
         }
+        public async Task<IEnumerable<UserMembers>> GetAllUsersWithProjectStatusAsync(int projectId)
+        {
+            // Lấy tất cả người dùng và chuyển đổi thành danh sách
+            var allUsers = (await GetAllUsersAsync()).ToList();
 
+            // Lấy danh sách người dùng thuộc project và chuyển đổi thành danh sách
+            var projectUsers = (await GetUsersByProjectId(projectId)).ToList();
+
+            var result = new List<UserMembers>();
+
+            foreach (var user in allUsers)
+            {
+                // Lấy vai trò cho từng người dùng
+                var roles = await _userManager.GetRolesAsync(user);
+                result.Add(new UserMembers
+                {
+                    Id = user.Id,
+                    FullName = user.fullName, // Sửa lại tên thuộc tính nếu cần
+                    Roles = roles.FirstOrDefault(), // Giả định mỗi user chỉ có một vai trò
+                    ImageUrl = user.PhotoUrl,
+                });
+            }
+
+            await _unitOfWork.CompleteAsync();
+
+            return result;
+        }
     }
 }

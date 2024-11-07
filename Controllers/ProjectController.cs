@@ -241,6 +241,13 @@ namespace task_management.Controllers
             return View("MemberList", detailProject);
         }
 
+        public async Task<IActionResult> AllUsers(int projectId)
+        {
+            var allUsers = await _userService.GetAllUsersWithProjectStatusAsync(projectId);
+
+            return View(allUsers);
+        }
+
 
 
         [HttpPost]

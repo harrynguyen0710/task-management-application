@@ -1,0 +1,77 @@
+﻿@model IEnumerable<task_management.ViewModels.UserMembers>
+
+<h2>Users List</h2>
+
+<style>
+    .table-frame {
+        background-color: white;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1.5rem;
+    }
+
+    .avatar-image {
+        width: 4rem;
+        height: 4rem;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    /* Button Styling */
+    .btn {
+        background-color: #3b82f6;
+        color: white;
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 0.375rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        font-size: 1rem;
+    }
+
+        .btn:hover {
+            background-color: #2563eb;
+        }
+
+        .btn:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(59, 130, 247, 0.5);
+        }
+</style>
+
+<div class="table-frame">
+    <table class="table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Full Name</th>
+                <th>Roles</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>
+                        @if (!string.IsNullOrEmpty(user.ImageUrl))
+                        {
+                            <img src="~/images/@user.ImageUrl" alt="User Image" class="avatar-image" />
+                        }
+                        else
+                        {
+                            <img src="/images/Icon/avatar.png" alt="Default Avatar" class="avatar-image" />
+                        }
+                    </td>
+                    <td>@user.FullName</td>
+                    <td>@user.Roles</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="flex justify-between space-x-4">
+        <a asp-action="Index">
+            <button class="btn">Back to List</button>
+        </a>
+    </div>
+</div>
