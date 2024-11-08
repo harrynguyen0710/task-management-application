@@ -168,6 +168,7 @@ namespace task_management.Controllers
             string assignee = ""
         )
         {
+
             var project = await _projectService.GetDetailedProject(projectId);
             if (project == null)
             {
@@ -239,6 +240,7 @@ namespace task_management.Controllers
             };
 
             return View("MemberList", detailProject);
+
         }
 
 
