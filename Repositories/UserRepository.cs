@@ -6,9 +6,10 @@ namespace task_management.Repositories
     public class UserRepository : IUserRepository
     {
         private readonly ApplicationDbContext _context;
-        public UserRepository(ApplicationDbContext context) 
+        public UserRepository(ApplicationDbContext context)
         {
-            _context = context; 
+            _context = context;
+
         }
 
         public bool IsEmailExisted(string email)
