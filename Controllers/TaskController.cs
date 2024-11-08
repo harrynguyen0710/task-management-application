@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using task_management.Models;
 using task_management.Services;
 using task_management.ViewModels;
 
@@ -12,7 +11,7 @@ namespace task_management.Controllers
         private readonly UserService _userService;
         public TaskController(TaskService taskService, UserService userService)
         {
-            _taskService = taskService;   
+            _taskService = taskService;
             _userService = userService;
         }
         public IActionResult Index()
@@ -20,7 +19,7 @@ namespace task_management.Controllers
             return View();
         }
 
-        public async Task<IActionResult> AddTask(int projectId) 
+        public async Task<IActionResult> AddTask(int projectId)
         {
             var availableUsers = await _userService.GetUsersByProjectId(projectId);
             ViewBag.AvailableUsers = new SelectList(availableUsers, "Id", "fullName");
@@ -36,6 +35,7 @@ namespace task_management.Controllers
         public async Task<IActionResult> AddTask(TaskDetails taskDetails)
         {
             await _taskService.AddTaskAsync(taskDetails.Tasks);
+            TempData["AddTaskMessage"] = "Task added successfully!";
             return RedirectToAction("Details", "Project", new { id = taskDetails.projectId });
         }
 
@@ -43,6 +43,7 @@ namespace task_management.Controllers
         public async Task<IActionResult> InActiveTask(TaskDetails taskDetails)
         {
             await _taskService.InActiveTaskAsync(taskDetails.Tasks);
+            TempData["InActiveTaskMessage"] = "Task removed from the project successfully!";
             return RedirectToAction("Details", "Project", new { id = taskDetails.projectId });
         }
 

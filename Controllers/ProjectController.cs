@@ -163,6 +163,7 @@ namespace task_management.Controllers
         public async Task<IActionResult> AddUserToProject(int projectId, string userId)
         {
             await _projectService.AddUserToProject(projectId, userId);
+            TempData["AddUserMessage"] = "User added to the project successfully!";
             return RedirectToAction("Details", new { id = projectId });
         }
 
@@ -170,6 +171,7 @@ namespace task_management.Controllers
         public async Task<IActionResult> RemoveUserToProject(int projectId, string userId)
         {
             await _projectService.RemoveUserToProject(projectId, userId);
+            TempData["RemoveUserMessage"] = "User removed from the project successfully.";
             return RedirectToAction("Details", new { id = projectId });
         }
 
