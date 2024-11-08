@@ -243,8 +243,6 @@ namespace task_management.Controllers
 
         }
 
-
-
         [HttpPost]
         public async Task<IActionResult> RemoveUserToProject(int projectId, string userId)
         {

@@ -13,13 +13,13 @@ namespace task_management.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserService _userSerivce;
 
-        public AuthController(IdentityService authService, UserManager<Users> userManager, 
+        public AuthController(IdentityService authService, UserManager<Users> userManager,
             EmailService emailService, RoleManager<IdentityRole> roleManager, UserService userService)
         {
             _authService = authService;
             _userManager = userManager;
             _emailService = emailService;
-            _roleManager = roleManager; 
+            _roleManager = roleManager;
             _userSerivce = userService;
         }
         public IActionResult Index()
@@ -129,6 +129,12 @@ namespace task_management.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        public async Task<IActionResult> AllUsers(int projectId)
+        {
+            var allUsers = await _userSerivce.GetAllUsersWithProjectStatusAsync(projectId);
+
+            return View(allUsers);
+        }
 
         public IActionResult Login()
         {
