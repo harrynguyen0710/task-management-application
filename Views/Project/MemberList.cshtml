@@ -2,154 +2,107 @@
 @{
     ViewData["Title"] = "Member List";
 }
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Details</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.0/dist/tailwind.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <style>
-        /* Team Members Frame */
-        .team-members-frame {
-            background-color: white;
-            padding: 1.5rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin-bottom: 1.5rem;
-        }
-
-        .frame-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 1rem;
-        }
-
-        .table-header, .table-row {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            align-items: center; /* Align items to center */
-        }
-
-        .table-row {
-            padding: 0.5rem 0; /* Add padding to separate each row */
-            margin-bottom: 0.5rem; /* Add margin between rows */
-            border-bottom: 1px solid #e5e7eb; /* Light border to separate rows */
-        }
-
-        .header-item, .row-item {
-            width: 33.33%;
-            color: #4a4a4a;
-        }
-
-        .avatar-image {
-            width: 4rem;
-            height: 4rem;
-            border-radius: 50%;
-            margin-right: 1rem; /* Space between image and text */
-        }
-
-        /* Tasks Frame */
-        .tasks-frame {
-            background-color: white;
-            padding: 1.5rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .frame-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .filter-section {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 1rem;
-        }
-
-        .filter-input {
-            border: 1px solid #d1d5db;
-            padding: 0.5rem;
-            border-radius: 0.375rem;
-            width: 23%;
-            font-size: 1rem;
-        }
-    </style>
 </head>
-<body>
-    <div class="team-members-frame">
-        <h2 class="frame-title">Team Members</h2>
-        @if (Model?.UserRole != null && Model.UserRole.Any())
-        {
-            <div class="table-header">
-                <p class="header-item"><strong></strong></p>
-                <p class="header-item"><strong>Name</strong></p>
-                <p class="header-item text-center"><strong>Roles</strong></p>
-            </div>
-            @foreach (var user in Model.UserRole)
-            {
-                <div class="table-row">
-                    <p class="row-item text-left">
-                        @if (!string.IsNullOrEmpty(user.ImageUrl))
-                        {
-                            <img src="~/images/@user.ImageUrl" alt="User Image" class="avatar-image" />
-                        }
-                        else
-                        {
-                            <img src="/images/Icon/avatar.png" alt="Default Avatar" class="avatar-image" />
-                        }
-                    </p>
-                    <p class="row-item text-left">
-                        @user.fullName
-                    </p>
-                    <p class="row-item text-center">
-                        @string.Join(", ", user.Roles ?? Enumerable.Empty<string>())
-                    </p>
-                </div>
-            }
-        }
-    </div>
-
-    <div class="tasks-frame">
-        <div class="frame-header">
-            <h2 class="frame-title">Project Tasks</h2>
+<body class="bg-gray-100 text-gray-900">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div>
+            @Html.Partial("_SidebarPartial")
         </div>
-        <div class="filter-section">
-            <input type="text" id="searchInput" placeholder="Search by title" class="filter-input">
-            <select id="statusFilter" class="filter-input">
-                <option value="">Filter by Status</option>
-                <option value="Not Started">Not Started</option>
-                <option value="In Progress">In Progress</option>
-                <option value="Completed">Completed</option>
-            </select>
-            <select id="priorityFilter" class="filter-input">
-                <option value="">Filter by Priority</option>
-                <option value="Critical">Critical</option>
-                <option value="High">High</option>
-                <option value="Medium">Medium</option>
-                <option value="Low">Low</option>
-            </select>
-            <select id="assigneeFilter" class="filter-input">
-                <option value="">Filter by Assigned To</option>
-                @if (ViewBag.Staff != null)
+
+        <!-- Main Content -->
+        <div class="flex-1 container mx-auto p-8 overflow-y-auto">
+            <h2 class="text-3xl font-bold mb-6">Project Details</h2>
+
+            <!-- Team Members Section -->
+            <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+                <h3 class="text-2xl font-semibold mb-4">Team Members</h3>
+                @if (Model?.UserRole != null && Model.UserRole.Any())
                 {
-                    @foreach (var user in ViewBag.Staff)
+                    <div class="grid grid-cols-3 gap-4 text-gray-700">
+                        <p><strong>Avatar</strong></p>
+                        <p><strong>Name</strong></p>
+                        <p><strong>Roles</strong></p>
+                    </div>
+                    @foreach (var user in Model.UserRole)
                     {
-                        <option value="@user.Value">@user.Text</option>
+                        <div class="grid grid-cols-3 gap-4 py-4 border-b">
+                            <div class="flex items-center">
+                                <p class="row-item text-left">
+                                    @if (!string.IsNullOrEmpty(user.ImageUrl))
+                                    {
+                                        <img src="~/images/@user.ImageUrl" alt="User Image" class="w-12 h-12 rounded-full border border-gray-300" />
+                                    }
+                                    else
+                                    {
+                                        <img src="/images/Icon/avatar.png" alt="Default Avatar" class="w-12 h-12 rounded-full border border-gray-300" />
+                                    }
+                                </p>
+                            </div>
+                            <div class="flex items-center">
+                                <span>@user.fullName</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span>@string.Join(", ", user.Roles ?? Enumerable.Empty<string>())</span>
+                            </div>
+                        </div>
                     }
                 }
-            </select>
-        </div>
-        <div id="taskSection, taskModal">
-            @await Html.PartialAsync("_TasksPartial", Model)
-            @await Html.PartialAsync("_TasksDetailPartial", Model)
-        </div>
-        <div class="flex justify-between space-x-4">
-            <a asp-action="Index">
-                <button class="bg-blue-500 text-white px-4 py-2 rounded">Back to List</button>
-            </a>
+                else
+                {
+                    <p class="text-gray-500 text-center">No team members found.</p>
+                }
+            </div>
+
+            <!-- Project Tasks Section -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-2xl font-semibold">Project Tasks</h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                    <input type="text" id="searchInput" placeholder="Search by title" class="border-gray-300 rounded-md p-2 w-full">
+                    <select id="statusFilter" class="border-gray-300 rounded-md p-2 w-full">
+                        <option value="">Filter by Status</option>
+                        <option value="Not Started">Not Started</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Completed">Completed</option>
+                    </select>
+                    <select id="priorityFilter" class="border-gray-300 rounded-md p-2 w-full">
+                        <option value="">Filter by Priority</option>
+                        <option value="Critical">Critical</option>
+                        <option value="High">High</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Low">Low</option>
+                    </select>
+                    <select id="assigneeFilter" class="border-gray-300 rounded-md p-2 w-full">
+                        <option value="">Filter by Assigned To</option>
+                        @if (ViewBag.Staff != null)
+                        {
+                            @foreach (var user in ViewBag.Staff)
+                            {
+                                <option value="@user.Value">@user.Text</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div id="taskSection, taskModal">
+                    @await Html.PartialAsync("_TasksPartial", Model)
+                    @await Html.PartialAsync("_TasksDetailPartial", Model)
+                </div>
+                <div class="flex justify-start mt-6">
+                    <a href="@Url.Action("Index", "Project")" class="bg-blue-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-700 focus:outline-none">
+                        <i class="fas fa-arrow-left mr-2"></i> Back to List
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -174,10 +127,8 @@
         }
 
         $(document).ready(function () {
-            // Initial load of tasks
             loadTasks(1);
 
-            // Handle search input keyup event for real-time searching
             $('#searchInput').on('keyup', function () {
                 var searchTerm = $(this).val();
                 var status = $('#statusFilter').val();
@@ -186,24 +137,12 @@
                 loadTasks(1, searchTerm, status, priority, assignee);
             });
 
-            // Handle filter changes
             $('#statusFilter, #priorityFilter, #assigneeFilter').on('change', function () {
                 var searchTerm = $('#searchInput').val();
                 var status = $('#statusFilter').val();
                 var priority = $('#priorityFilter').val();
                 var assignee = $('#assigneeFilter').val();
                 loadTasks(1, searchTerm, status, priority, assignee);
-            });
-
-            // Handle pagination links using event delegation
-            $(document).on('click', '.pagination-button', function (e) {
-                e.preventDefault();
-                var pageNumber = $(this).data('pagenumber');
-                var searchTerm = $('#searchInput').val();
-                var status = $('#statusFilter').val();
-                var priority = $('#priorityFilter').val();
-                var assignee = $('#assigneeFilter').val();
-                loadTasks(pageNumber, searchTerm, status, priority, assignee);
             });
         });
     </script>
