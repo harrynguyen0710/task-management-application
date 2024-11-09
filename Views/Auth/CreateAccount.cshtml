@@ -6,9 +6,15 @@
 <head>
     <title>Create Employees</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body class="bg-gray-100 text-gray-900">
-    <div class="container mx-auto px-4 py-16">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div>
+            @Html.Partial("_SidebarPartial")
+        </div>
+        <div class="flex-1 container mx-auto px-4 py-16 overflow-y-auto">
         <h1 class="text-3xl font-bold mb-8 text-left">Create Employees</h1>
         <div class="bg-white p-8 rounded-lg shadow-lg">
             <form asp-action="CreateAccount" method="post" enctype="multipart/form-data">
@@ -80,6 +86,7 @@
                 </div>
             </form>
         </div>
+    </div>
     </div>
 
     @section Scripts {
