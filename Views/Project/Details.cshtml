@@ -211,7 +211,8 @@
 
             <div id="taskSection, taskModal">
                 @await Html.PartialAsync("_TasksPartial", Model)
-                @await Html.PartialAsync("_TasksDetailPartial", Model)
+@*                @await Html.PartialAsync("_TasksDetailPartial", Model)
+*@
             </div>
         </div>
         <div id="popupNotification" class="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg hidden z-50">
@@ -260,6 +261,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
         function loadTasks(pageNumber, searchTerm = '', status = '', priority = '', assignee = '') {
+            console.log('Hoang Nguyen call load tasks');
             $.ajax({
                 url: '@Url.Action("LoadTasks", "Project")',
                 type: 'GET',
