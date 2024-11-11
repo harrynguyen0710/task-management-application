@@ -1,5 +1,4 @@
-﻿using System.Data.Entity;
-using task_management.Data;
+﻿using task_management.Data;
 using task_management.IRepositories;
 using task_management.Models;
 

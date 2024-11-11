@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.Globalization;
 using task_management.IRepositories;
 using task_management.Models;
 using task_management.ViewModels;
@@ -88,6 +89,12 @@ namespace task_management.Services
                 }
             }
             return usersWithRoles;
+        }
+
+        public async Task<IEnumerable<string>> GetUserRole(Users user)
+        {
+            var roleName = await _userManager.GetRolesAsync(user);
+            return roleName;
         }
 
 

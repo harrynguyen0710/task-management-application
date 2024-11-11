@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using task_management.IRepositories;
 using task_management.Models;
 using task_management.ViewModels;
@@ -10,12 +11,20 @@ namespace task_management.Services
         private readonly UserManager<Users> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ProjectService _projectService;
+        private readonly TaskService _taskService;  
+        private readonly IdentityService _identityService;
 
-        public UserService(UserManager<Users> userManager, RoleManager<IdentityRole> roleManager, IUnitOfWork unitOfWork)
+        public UserService(UserManager<Users> userManager, RoleManager<IdentityRole> roleManager, 
+            IUnitOfWork unitOfWork, ProjectService projectService, TaskService taskService,
+            IdentityService identityService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _projectService = projectService;
             _unitOfWork = unitOfWork;
+            _taskService = taskService;
+            _identityService = identityService;
         }
 
         public async Task<IEnumerable<Users>> GetAllUsersAsync()
@@ -51,6 +60,20 @@ namespace task_management.Services
         public bool IsUserNameExisted(string userName)
         {
             return _unitOfWork.UserRepository.IsUserNameExisted(userName);
+        }
+
+        public async Task<UserDetails> GetDetailUser(string userId)
+        {
+            var jointProjects = await _projectService.GetProjectsByUserId(userId);
+            var jointTasks = await _taskService.GetTasksByUserId(userId);
+            var detailedUser = new UserDetails
+            {
+                Projects = jointProjects,
+                Tasks = jointTasks,
+            };
+            return detailedUser;
+
+
         }
 
 
