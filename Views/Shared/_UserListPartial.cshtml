@@ -1,0 +1,35 @@
+﻿@model task_management.ViewModels.ProjectDetails
+<div class="mb-4">
+    @if (Model.UserRole != null && Model.UserRole.Any())
+    {
+        <div class="w-full flex justify-between">
+            <p class="text-gray-700 w-1/3"><strong>Name</strong></p>
+            <p class="text-gray-700 w-1/3 text-center"><strong>Roles</strong></p>
+        </div>
+        @foreach (var user in Model.UserRole)
+        {
+            <div class="w-full flex justify-between items-center py-2 border-b">
+                <p class="text-gray-700 w-1/3 text-left">
+                </p>
+                <p class="text-gray-700 w-1/3 text-left">
+                    @user.fullName
+                </p>
+                <p class="text-gray-700 w-1/3 text-center">
+                    @string.Join(", ", user.Roles)
+                </p>
+                <!-- Remove Button -->
+                <form class="w-1/3 text-right" method="post" asp-action="RemoveUserToProject" asp-controller="Project">
+                    <input type="hidden" name="projectId" value="@Model.Project.projectId" />
+                    <input type="hidden" name="userId" value="@user.Id" />
+                    <button type="button" class="ml-2 text-red-500" onclick="confirmRemovePerson(event)" title="Remove User">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </form>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="text-center py-4 text-gray-500">Do not have anyone.</div>
+    }
+</div>

@@ -91,7 +91,7 @@ namespace task_management.Controllers
                 SelectedTask = selectedTask,
                 PageNumber = pageNumber,
                 PageSize = pageSize,
-                TotalTasks = totalTasks
+                TotalTasks = totalTasks,
             };
 
             ViewBag.AvailableUsers = new SelectList(availableUsers, "Id", "fullName");
@@ -158,18 +158,96 @@ namespace task_management.Controllers
 
 
 
-
-        [HttpPost]
-        public async Task<IActionResult> AddUserToProject(int projectId, string userId)
+        public async Task<IActionResult> FullMemberList(
+            int projectId,
+            int pageNumber = 1,
+            int pageSize = 5,
+            string searchTerm = "",
+            string status = "",
+            string priority = "",
+            string assignee = ""
+        )
         {
-            await _projectService.AddUserToProject(projectId, userId);
-            return RedirectToAction("Details", new { id = projectId });
+
+            var project = await _projectService.GetDetailedProject(projectId);
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            // Fetch team members and their additional details
+            var teamMembers = _unitOfWork.ProjectAssignmentRepository.GetTeamMembersByProject(projectId);
+            var staffRoles = (List<UserRoles>)(await _identityService.GetUsersWithRoles(teamMembers));
+
+            var detailedMembers = new List<UserMembers>();
+            foreach (var member in teamMembers)
+            {
+                var user = await _userService.GetUserById(member.userId);
+                if (user != null)
+                {
+                    detailedMembers.Add(new UserMembers
+                    {
+                        Id = user.Id,
+                        FullName = user.FullName,
+                        ImageUrl = user.ImageUrl,
+                        Roles = user.Roles
+                    });
+                }
+            }
+
+            // Retrieve all tasks associated with the team members in the project
+            var allTasks = await _taskService.GetTasksInProjects(teamMembers, 1, int.MaxValue);
+
+            // Filter tasks by search term
+            var filteredTasks = string.IsNullOrEmpty(searchTerm)
+                ? allTasks.ToList()
+                : allTasks.Where(t => t.name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
+
+            // Apply additional filters if provided
+            if (!string.IsNullOrEmpty(status))
+            {
+                filteredTasks = filteredTasks.Where(t => t.status.Equals(status, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(priority))
+            {
+                filteredTasks = filteredTasks.Where(t => t.priority.Equals(priority, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(assignee))
+            {
+                filteredTasks = filteredTasks.Where(t => t.userId == assignee).ToList(); // Adjust based on your model
+            }
+
+            // Count of filtered tasks
+            var filteredTasksCount = filteredTasks.Count;
+
+            // Paginate the filtered tasks
+            var paginatedTasks = filteredTasks
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            // Prepare the ProjectDetails view model with filtered and paginated tasks
+            var detailProject = new ProjectDetails
+            {
+                Project = project,
+                UserRole = staffRoles,
+                Tasks = paginatedTasks,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalTasks = filteredTasksCount,
+            };
+
+            return View("MemberList", detailProject);
+
         }
 
         [HttpPost]
         public async Task<IActionResult> RemoveUserToProject(int projectId, string userId)
         {
             await _projectService.RemoveUserToProject(projectId, userId);
+            TempData["RemoveUserMessage"] = "User removed from the project successfully.";
             return RedirectToAction("Details", new { id = projectId });
         }
 

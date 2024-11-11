@@ -9,9 +9,10 @@ namespace task_management.Repositories
     {
         private readonly ApplicationDbContext _context;
 
-        public UserRepository(ApplicationDbContext context) 
+        public UserRepository(ApplicationDbContext context)
         {
-            _context = context; 
+            _context = context;
+
         }
 
         public async Task<Users> GetUserById(string id)

@@ -9,12 +9,19 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body class="bg-gray-100">
+    <div class="flex h-screen">
+        <div>
+            @Html.Partial("_SidebarPartial")
+        </div>
+    <div class="flex-1 p-8 overflow-y-auto">
     <div class="container mx-auto mt-8">
         <h1 class="text-3xl font-bold mb-4">Project Details</h1>
         <div class="flex flex-wrap -mx-4">
+            <!-- Left Column: Project Information and Statistics -->
             <div class="w-full lg:w-1/2 px-4 mb-6">
+                <!-- Project Information Section -->
                 <div class="bg-white p-6 rounded-lg shadow mb-6">
-                    <h2 class="text-2xl font-bold mb-2" "card-title">@Model.Project.name</h2>
+                    <h2 class="text-2xl font-bold mb-2">@Model.Project.name</h2>
                     <p class="text-gray-700 mb-4"><strong>Description:</strong> @Model.Project.description</p>
                     <p class="text-gray-700 mb-4"><strong>Start Date:</strong> @Model.Project.startDate.ToString("d")</p>
                     <p class="text-gray-700 mb-2"><strong>Status:</strong></p>
@@ -23,7 +30,7 @@
                         {
                             "Not Started" => "bg-secondary",
                             "In Progress" => "bg-primary",
-                            "Completed" => "bg-success", // Changed to green for completion
+                            "Completed" => "bg-success",
                             _ => "bg-light"
                         };
                     }
@@ -31,16 +38,63 @@
                         @Model.Project.status
                     </span>
                 </div>
+
+                <!-- Project Statistics Section -->
+                <div class="bg-white p-6 rounded-lg shadow mb-6">
+                    <h2 class="text-2xl font-bold mb-4">Project</h2>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-gray-100 p-4 rounded-lg">
+                            <p class="text-lg font-semibold flex items-center">
+                                Total Members
+                                <img src="/images/Icon/members.png" alt="Total Members" class="w-8 h-8  ml-2">
+                            </p>
+                            <p class="text-3xl">@Model.UserRole.Count()</p>
+                        </div>
+                        <div class="bg-gray-100 p-4 rounded-lg">
+                            <p class="text-lg font-semibold flex items-center">
+                                Total Tasks
+                                <img src="/images/Icon/tasks.png" alt="Tasks" class="w-8 h-8  ml-2">
+                                </p>
+                            <p class="text-3xl">@Model.Tasks.Count()</p>
+                        </div>
+                    </div>
+
+                    <h2 class="text-2xl font-bold my-4">Task</h2>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-gray-100 p-4 rounded-lg">
+                            <p class="text-lg font-semibold flex items-center">
+                                Due
+                                <img src="/images/Icon/due-date.png" alt="Due" class="w-8 h-8  ml-2">
+                             </p>
+                            <p class="text-3xl">@Model.Tasks.Count(t => t.status == "Due")</p>
+                        </div>
+                        <div class="bg-gray-100 p-4 rounded-lg">
+                             <p class="text-lg font-semibold flex items-center">
+                                In Progress
+                                <img src="/images/Icon/InProgress.png" alt=" In Progress" class="w-8 h-8  ml-2">
+                            </p>
+                            <p class="text-3xl">@Model.Tasks.Count(t => t.status == "In Progress")</p>
+                        </div>
+                        <div class="bg-gray-100 p-4 rounded-lg">
+                            <p class="text-lg font-semibold flex items-center">
+                                Completed
+                                <img src="/images/Icon/completed.png" alt="Completed" class="w-8 h-8  ml-2">
+                            </p>
+                            <p class="text-3xl">@Model.Tasks.Count(t => t.status == "Completed")</p>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <!-- Right Column: Information Staff -->
             <div class="w-full lg:w-1/2 px-4 mb-6">
                 <div class="bg-white p-6 rounded-lg shadow mb-6">
-                    <h2 class="text-2xl font-bold mb-4">Add Users to Project</h2>
                     <div class="mb-4">
                         <div class="card-body">
-                            <form method="post" asp-action="AddUserToProject" asp-controller="Project">
+                            <form id="addUserForm" method="post">
                                 <input type="hidden" name="projectId" value="@Model.Project.projectId" />
                                 <div class="form-group">
-                                    <label for="userSelect" class="block text-gray-700 mb-2">Select User</label>
+                                    <label for="userSelect" class="block text-gray-700 mb-4">Select User</label>
                                     <select id="userSelect" name="userId" class="form-control" required>
                                         <option value="">-- Select a user --</option>
                                         @foreach (var user in ViewBag.AvailableUsers)
@@ -49,54 +103,76 @@
                                         }
                                     </select>
                                 </div>
-                                <button type="submit" class="btn btn-primary bg-blue-500 text-white px-4 py-2 rounded mb-4">Add User</button>
+                                <div class="d-flex justify-content-end mb-4 mt-4">
+                                    <button type="submit" class="btn btn-primary bg-blue-500 text-white px-4 py-2 rounded">Add User</button>
+                                </div>
                             </form>
+
+                            <div id="userAddMessage" class="alert alert-info mt-2 hidden mb-2"></div>
                             @if (ViewData["AddUserMessage"] != null)
                             {
-                                <div class="alert alert-info mt-2">@ViewData["AddUserMessage"]</div>
+                                <div class="alert alert-info mt-2 mb-4">@ViewData["AddUserMessage"]</div>
                             }
                         </div>
                     </div>
-                    <h2 class="text-2xl font-bold mb-4">Joint Staff</h2>
-                    <div class="mb-4">
-                        <div class="w-full flex justify-between">
-                            <p class="text-gray-700 w-1/3"><strong>Name</strong></p>
-                            <p class="text-gray-700 w-1/3 text-center"><strong>Roles</strong></p>
-                            <p class="text-gray-700 w-1/3 text-right"><strong></strong></p>
-                        </div>
-                        @foreach (var user in Model.UserRole.Take(5))
-                        {                         
-                            <div class="w-full flex justify-between items-center py-2 border-b">
-
-                                <p class="text-gray-700 w-1/3 text-left">
-                                    @user.fullName
-                                </p>
-
-                                <p class="text-gray-700 w-1/3 text-center">
-                                    @string.Join(", ", user.Roles)
-                                </p>
-                                <script src="~/js/popup.js"></script>
-                                <form class="w-1/3 text-right" method="post" asp-action="RemoveUserToProject" asp-controller="Project">
-                                    <input type="hidden" name="projectId" value="@Model.Project.projectId" />
-                                    <input type="hidden" name="userId" value="@user.Id" />
-                                    <button class="ml-2 text-red-500" onclick="confirmRemovePerson(event)" title="Remove User">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
+                    <h2 class="text-2xl font-bold mb-4">Team members</h2>
+                    <div class="mb-4" id="userList">
+                        @if (Model.UserRole != null && Model.UserRole.Any())
+                        {
+                            <div class="w-full flex justify-between">
+                                <p class="text-gray-700 w-1/3"><strong></strong></p>
+                                <p class="text-gray-700 w-1/3"><strong>Name</strong></p>
+                                <p class="text-gray-700 w-1/3 text-center"><strong>Roles</strong></p>
+                                <p class="text-gray-700 w-1/3 text-right"><strong></strong></p>
                             </div>
+                            @foreach (var user in Model.UserRole.Take(5))
+                            {
+                                <div class="w-full flex justify-between items-center py-2 border-b">
+                                    <p class="text-gray-700 w-1/3 text-left">
+                                        @if (!string.IsNullOrEmpty(user.ImageUrl))
+                                        {
+                                            <img src="~/images/@user.ImageUrl" alt="User Image" class="rounded-full w-16 h-16" />
+                                        }
+                                        else
+                                        {
+                                            <img src="/images/Icon/avatar.png" alt="Default Avatar" class="rounded-full w-16 h-16" />
+                                        }
+                                    </p>
+                                    <p class="text-gray-700 w-1/3 text-left">
+                                        @user.fullName
+                                    </p>
 
+
+                                    <p class="text-gray-700 w-1/3 text-center">
+                                        @string.Join(", ", user.Roles)
+                                    </p>
+                                    <script src="~/js/popup.js"></script>
+                                    <form class="w-1/3 text-right" method="post" asp-action="RemoveUserToProject" asp-controller="Project">
+                                        <input type="hidden" name="projectId" value="@Model.Project.projectId" />
+                                        <input type="hidden" name="userId" value="@user.Id" />
+                                        <button type="button" class="ml-2 text-red-500" onclick="confirmRemovePerson(event)" title="Remove User">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            }
                             @if (Model.UserRole.Count > 5)
                             {
                                 <div class="flex justify-center mt-2">
-                                    <p class="text-blue-500 cursor-pointer">See More</p>
+                                              <a asp-controller="Project" asp-action="FullMemberList" asp-route-projectId="@Model.Project.projectId" class="text-blue-500 cursor-pointer">See More</a>
                                 </div>
                             }
                         }
-                    </div>
 
+                        else
+                        {
+                            <div class="text-center py-4 text-gray-500">Do not have anyone.</div>
+                        }
+                    </div>
                 </div>
             </div>
         </div>
+    </div>  
 
 
         <!-- Task Management Section -->
@@ -138,7 +214,9 @@
                 @await Html.PartialAsync("_TasksDetailPartial", Model)
             </div>
         </div>
-
+        <div id="popupNotification" class="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg hidden z-50">
+            <span id="popupMessage"></span>
+        </div>
         <div class="flex justify-between space-x-4">
             <a asp-action="Index">
                 <button class="bg-blue-500 text-white px-4 py-2 rounded">Back to List</button>
@@ -148,7 +226,37 @@
             </a>
         </div>
     </div>
+    @if (TempData["AddUserMessage"] != null)
+    {
+        <script>
+            showPopupNotification('@TempData["AddUserMessage"]');
+        </script>
+    }
 
+    @if (TempData["RemoveUserMessage"] != null)
+    {
+        <script>
+            showPopupNotification('@TempData["RemoveUserMessage"]');
+        </script>
+    }
+
+    @if (TempData["AddTaskMessage"] != null)
+    {
+        <script>
+            showPopupNotification('@TempData.Peek("AddTaskMessage")');
+        </script>
+    }
+    <div id="popup" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+            <h2 class="text-xl font-bold mb-4">Confirm Delete</h2>
+            <p id="popupMessage" class="mb-4"></p>
+            <div class="flex justify-end space-x-4">
+                <button class="bg-gray-500 text-white px-4 py-2 rounded" onclick="hidePopup()">Cancel</button>
+                <button id="confirmDelete" class="bg-red-500 text-white px-4 py-2 rounded">Delete</button>
+            </div>
+        </div>
+    </div>
+    </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
         function loadTasks(pageNumber, searchTerm = '', status = '', priority = '', assignee = '') {
@@ -203,6 +311,86 @@
                 loadTasks(pageNumber, searchTerm, status, priority, assignee);
             });
         });
+
+        $(document).ready(function () {
+            $('#addUserForm').submit(function (e) {
+                e.preventDefault();
+
+                var formData = $(this).serialize();
+                
+                var params = new URLSearchParams(formData);
+                var Id = params.get("projectId");
+                var user = params.get("userId");
+
+
+                $.ajax({
+                    url: '@Url.Action("AddUserToProject", "Project")',
+                    type: 'POST',
+                    data: { projectId: Id, userId: user },
+                    success: function (response) {
+                        if (response.success) {
+                            // Generate HTML for the new user row
+                            console.log(response)
+
+
+                            var newUserHtml = `
+                                <div class="w-full flex justify-between items-center py-2 border-b">
+                                    <p class="text-gray-700 w-1/3 text-left">
+                                        <img src="${response.user.imageUrl ? '/images/' + response.user.imageUrl : '/images/Icon/avatar.png'}"
+                                             alt="User Image" class="rounded-full w-16 h-16" />
+                                    </p>
+                                    <p class="text-gray-700 w-1/3 text-left">
+                                        ${response.user.fullName}
+                                    </p>
+                                    <p class="text-gray-700 w-1/3 text-center">
+                                       ${response.user.roles}
+                                    </p>
+                                    <form class="w-1/3 text-right" method="post" asp-action="RemoveUserToProject" asp-controller="Project">
+                                        <input type="hidden" name="projectId" value="${response.user.projectId}" />
+                                        <input type="hidden" name="userId" value="${response.user.id}" />
+                                        <button type="button" class="ml-2 text-red-500" onclick="confirmRemovePerson(event)" title="Remove User">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>`;
+
+                            // Append the new user HTML to the #userList
+                            $('#userList').append(newUserHtml);
+
+                            // Remove the user from the dropdown
+                            $('#userSelect option[value="' + response.user.id + '"]').remove();
+
+                            // Hide the "Do not have anyone" message if it is present
+                            $('.text-center.py-4.text-gray-500').hide();
+
+                            // Show notification
+                            $('#popupNotification').removeClass('hidden').text("User added to the project successfully!");
+
+                            // Hide the notification after 3 seconds
+                            setTimeout(function () {
+                                $('#popupNotification').addClass('hidden');
+                            }, 3000);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+
+
+
+                        // Log the error details in the console
+                        console.error("Error Status:", status);
+                        console.error("Error Message:", error);
+                        console.error("Response Text:", xhr.responseText);
+                      
+
+                        // Display a notification with the error message
+                        $('#popupNotification').removeClass('hidden').text("An error occurred: " + error);
+                    }
+                });
+            });
+        });
+
+
+
 
     </script>
 </body>

@@ -1,0 +1,150 @@
+﻿@model task_management.ViewModels.ProjectDetails
+@{
+    ViewData["Title"] = "Member List";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Details</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.0/dist/tailwind.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body class="bg-gray-100 text-gray-900">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div>
+            @Html.Partial("_SidebarPartial")
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 container mx-auto p-8 overflow-y-auto">
+            <h2 class="text-3xl font-bold mb-6">Project Details</h2>
+
+            <!-- Team Members Section -->
+            <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+                <h3 class="text-2xl font-semibold mb-4">Team Members</h3>
+                @if (Model?.UserRole != null && Model.UserRole.Any())
+                {
+                    <div class="grid grid-cols-3 gap-4 text-gray-700">
+                        <p><strong>Avatar</strong></p>
+                        <p><strong>Name</strong></p>
+                        <p><strong>Roles</strong></p>
+                    </div>
+                    @foreach (var user in Model.UserRole)
+                    {
+                        <div class="grid grid-cols-3 gap-4 py-4 border-b">
+                            <div class="flex items-center">
+                                <p class="row-item text-left">
+                                    @if (!string.IsNullOrEmpty(user.ImageUrl))
+                                    {
+                                        <img src="~/images/@user.ImageUrl" alt="User Image" class="w-12 h-12 rounded-full border border-gray-300" />
+                                    }
+                                    else
+                                    {
+                                        <img src="/images/Icon/avatar.png" alt="Default Avatar" class="w-12 h-12 rounded-full border border-gray-300" />
+                                    }
+                                </p>
+                            </div>
+                            <div class="flex items-center">
+                                <span>@user.fullName</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span>@string.Join(", ", user.Roles ?? Enumerable.Empty<string>())</span>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p class="text-gray-500 text-center">No team members found.</p>
+                }
+            </div>
+
+            <!-- Project Tasks Section -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-2xl font-semibold">Project Tasks</h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                    <input type="text" id="searchInput" placeholder="Search by title" class="border-gray-300 rounded-md p-2 w-full">
+                    <select id="statusFilter" class="border-gray-300 rounded-md p-2 w-full">
+                        <option value="">Filter by Status</option>
+                        <option value="Not Started">Not Started</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Completed">Completed</option>
+                    </select>
+                    <select id="priorityFilter" class="border-gray-300 rounded-md p-2 w-full">
+                        <option value="">Filter by Priority</option>
+                        <option value="Critical">Critical</option>
+                        <option value="High">High</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Low">Low</option>
+                    </select>
+                    <select id="assigneeFilter" class="border-gray-300 rounded-md p-2 w-full">
+                        <option value="">Filter by Assigned To</option>
+                        @if (ViewBag.Staff != null)
+                        {
+                            @foreach (var user in ViewBag.Staff)
+                            {
+                                <option value="@user.Value">@user.Text</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div id="taskSection, taskModal">
+                    @await Html.PartialAsync("_TasksPartial", Model)
+                    @await Html.PartialAsync("_TasksDetailPartial", Model)
+                </div>
+                <div class="flex justify-start mt-6">
+                    <a href="@Url.Action("Index", "Project")" class="bg-blue-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-700 focus:outline-none">
+                        <i class="fas fa-arrow-left mr-2"></i> Back to List
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        function loadTasks(pageNumber, searchTerm = '', status = '', priority = '', assignee = '') {
+            $.ajax({
+                url: '@Url.Action("LoadTasks", "Project")',
+                type: 'GET',
+                data: {
+                    projectId: '@Model.Project.projectId',
+                    pageNumber: pageNumber,
+                    searchTerm: searchTerm,
+                    status: status,
+                    priority: priority,
+                    assignee: assignee
+                },
+                success: function (result) {
+                    $('#taskSection').html(result);
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            loadTasks(1);
+
+            $('#searchInput').on('keyup', function () {
+                var searchTerm = $(this).val();
+                var status = $('#statusFilter').val();
+                var priority = $('#priorityFilter').val();
+                var assignee = $('#assigneeFilter').val();
+                loadTasks(1, searchTerm, status, priority, assignee);
+            });
+
+            $('#statusFilter, #priorityFilter, #assigneeFilter').on('change', function () {
+                var searchTerm = $('#searchInput').val();
+                var status = $('#statusFilter').val();
+                var priority = $('#priorityFilter').val();
+                var assignee = $('#assigneeFilter').val();
+                loadTasks(1, searchTerm, status, priority, assignee);
+            });
+        });
+    </script>
+</body>
+</html>
