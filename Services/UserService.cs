@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using task_management.IRepositories;
 using task_management.Models;
 using task_management.ViewModels;
@@ -12,10 +11,10 @@ namespace task_management.Services
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ProjectService _projectService;
-        private readonly TaskService _taskService;  
+        private readonly TaskService _taskService;
         private readonly IdentityService _identityService;
 
-        public UserService(UserManager<Users> userManager, RoleManager<IdentityRole> roleManager, 
+        public UserService(UserManager<Users> userManager, RoleManager<IdentityRole> roleManager,
             IUnitOfWork unitOfWork, ProjectService projectService, TaskService taskService,
             IdentityService identityService)
         {
@@ -134,5 +133,19 @@ namespace task_management.Services
 
             return result;
         }
+        public async Task<bool> RemoveUserFromProject(int projectId, string userId)
+        {
+            // Tìm và xóa ProjectAssignment phù hợp
+            var projectAssignment = await _unitOfWork.ProjectAssignmentRepository
+                .FindAsync(pa => pa.projectId == projectId && pa.userId == userId);
+
+            if (projectAssignment == null) return false; // Người dùng không tồn tại trong dự án
+
+            _unitOfWork.ProjectAssignmentRepository.Remove(projectAssignment);
+            await _unitOfWork.CompleteAsync();
+
+            return true; // Xóa thành công
+        }
+
     }
 }
