@@ -9,6 +9,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body class="bg-gray-100">
+    <div class="flex h-screen">
+        <div>
+            @Html.Partial("_SidebarPartial")
+        </div>
+    <div class="flex-1 p-8 overflow-y-auto">
     <div class="container mx-auto mt-8">
         <h1 class="text-3xl font-bold mb-4">Project Details</h1>
         <div class="flex flex-wrap -mx-4">
@@ -250,6 +255,7 @@
                 <button id="confirmDelete" class="bg-red-500 text-white px-4 py-2 rounded">Delete</button>
             </div>
         </div>
+    </div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>

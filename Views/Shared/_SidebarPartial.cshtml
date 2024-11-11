@@ -1,0 +1,89 @@
+﻿<div class="w-64 bg-white h-screen shadow-md">
+    <div class="p-4 flex items-center">
+        <img src="/images/Icon/siu.jpg" alt="SIU" class="w-8 h-8 mr-4">
+        <span class="text-xl font-semibold">
+            To Do List
+        </span>
+    </div>
+    <nav class="mt-6">
+        <ul>
+            <!-- Home -->
+            <li class="px-4 py-2">
+                <a class="flex items-center text-gray-700" href="@Url.Action("Index", "Home")">
+                    <i class="fas fa-home mr-2"></i> <!-- Home icon -->
+                    Home
+                </a>
+            </li>
+
+            <!-- Users Section -->
+            <li class="px-4 py-2">
+                <span class="text-gray-500">Users</span>
+                <ul class="ml-4 mt-2">
+                    <li class="py-1">
+                        <a class="flex items-center text-gray-700" href="@Url.Action("CreateAccount", "Auth")">
+                            <i class="fas fa-user-plus mr-2"></i> <!-- Create Account icon -->
+                            Create Account
+                        </a>
+                    </li>
+                    <li class="py-1">
+                        <a class="flex items-center text-gray-700" href="@Url.Action("AllUsers", "Auth")">
+                            <i class="fas fa-users mr-2"></i> <!-- All Users icon -->
+                            All Users
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <!-- Profile Section -->
+            <li class="px-4 py-2">
+                <span class="text-gray-500">Profile</span>
+                <ul class="ml-4 mt-2">
+                    <li class="py-1">
+                        <a class="flex items-center text-gray-700" href="@Url.Action("Index", "Profile")">
+                            <i class="fas fa-id-card mr-2"></i> <!-- Profile icon -->
+                            Profile
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <!-- Projects Section -->
+            <li class="px-4 py-2">
+                <span class="text-gray-500">Projects</span>
+                <ul class="ml-4 mt-2">
+                    <li class="py-1">
+                        <a class="flex items-center text-gray-700" href="@Url.Action("Create", "Project")">
+                            <i class="fas fa-folder-plus mr-2"></i> <!-- Create Project icon -->
+                            Create Project
+                        </a>
+                    </li>
+                    <li class="py-1">
+                        <a class="flex items-center text-gray-700" href="@Url.Action("Index", "Project")">
+                            <i class="fas fa-folder-open mr-2"></i> <!-- Project Lists icon -->
+                            Project Lists
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <!-- Help Section -->
+            <li class="px-4 py-2">
+                <span class="text-gray-500">Help</span>
+                <ul class="ml-4 mt-2">
+                    <li class="py-1">
+                        <a class="flex items-center text-gray-700" href="@Url.Action("HelpCenter", "Help")">
+                            <i class="fas fa-info-circle mr-2"></i> <!-- Help Center icon -->
+                            Help Center
+                        </a>
+                    </li>
+                    <li class="py-1">
+                        <a class="flex items-center text-gray-700" href="@Url.Action("Feedback", "Help")">
+                            <i class="fas fa-comments mr-2"></i> <!-- Feedback icon -->
+                            Feedback
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+</div>
