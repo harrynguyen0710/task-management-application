@@ -75,7 +75,7 @@
 
         <!-- Main Content -->
         <div class="flex-1 container mx-auto p-8 overflow-y-auto">
-            <h1 class="text-3xl font-bold text-center mb-8">User Profile Detail</h1>
+            <h1 class="text-3xl font-bold text-center mb-8">Profile Detail</h1>
             <!-- User Information Frame -->
             <div class="frame">
                 <h5 class="text-lg font-semibold mb-4">User Information</h5>
@@ -86,11 +86,9 @@
                     </div>
                     <div class="w-2/3 space-y-2">
                         <h4 class="text-2xl font-semibold">John Doe</h4>
-                        <p><strong>Email:</strong> johndoe@example.com</p>
-                        <p><strong>Role:</strong> Manager</p>
-                        <p><strong>Phone Number:</strong> (123) 456-7890</p>
-                        <p><strong>Joined Date:</strong> 2023-01-15</p>
-                        <p><strong>Bio:</strong> Experienced manager with a passion for leading teams and driving projects to successful completion.</p>
+                        <p><strong>Email: </strong>@Model.User.Email</p>
+                        <p><strong>Role: </strong> @Model.RoleNames.FirstOrDefault()</p>
+                        <p><strong>Phone Number: </strong> @Model.User.PhoneNumber</p>
                     </div>
                 </div>
             </div>
