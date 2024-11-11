@@ -1,4 +1,6 @@
-﻿using task_management.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+using task_management.Data;
 using task_management.IRepositories;
 using task_management.Models;
 
@@ -20,7 +22,11 @@ namespace task_management.Repositories
         {
             return _context.ProjectAssignments
                 .Where(p => p.projectId == projectId)
-                .ToList(); 
+                .ToList();
+        }
+        public async Task<ProjectAssignment> FindAsync(Expression<Func<ProjectAssignment, bool>> predicate)
+        {
+            return await _context.ProjectAssignments.FirstOrDefaultAsync(predicate);
         }
     }
 }

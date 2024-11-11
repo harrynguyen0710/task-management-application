@@ -125,37 +125,32 @@
                                 <p class="text-gray-700 w-1/3 text-center"><strong>Roles</strong></p>
                                 <p class="text-gray-700 w-1/3 text-right"><strong></strong></p>
                             </div>
-                            @foreach (var user in Model.UserRole.Take(5))
-                            {
-                                <div class="w-full flex justify-between items-center py-2 border-b">
-                                    <p class="text-gray-700 w-1/3 text-left">
-                                        @if (!string.IsNullOrEmpty(user.ImageUrl))
-                                        {
-                                            <img src="~/images/@user.ImageUrl" alt="User Image" class="rounded-full w-16 h-16" />
-                                        }
-                                        else
-                                        {
-                                            <img src="/images/Icon/avatar.png" alt="Default Avatar" class="rounded-full w-16 h-16" />
-                                        }
-                                    </p>
-                                    <p class="text-gray-700 w-1/3 text-left">
-                                        @user.fullName
-                                    </p>
-
-
-                                    <p class="text-gray-700 w-1/3 text-center">
-                                        @string.Join(", ", user.Roles)
-                                    </p>
-                                    <script src="~/js/popup.js"></script>
-                                    <form class="w-1/3 text-right" method="post" asp-action="RemoveUserToProject" asp-controller="Project">
-                                        <input type="hidden" name="projectId" value="@Model.Project.projectId" />
-                                        <input type="hidden" name="userId" value="@user.Id" />
-                                        <button type="button" class="ml-2 text-red-500" onclick="confirmRemovePerson(event)" title="Remove User">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            }
+                                    @foreach (var user in Model.UserRole.Take(5))
+                                    {
+                                        <div class="w-full flex justify-between items-center py-2 border-b" id="user_@user.Id">
+                                            <p class="text-gray-700 w-1/3 text-left">
+                                                @if (!string.IsNullOrEmpty(user.ImageUrl))
+                                                {
+                                                    <img src="~/images/@user.ImageUrl" alt="User Image" class="rounded-full w-16 h-16" />
+                                                }
+                                                else
+                                                {
+                                                    <img src="/images/Icon/avatar.png" alt="Default Avatar" class="rounded-full w-16 h-16" />
+                                                }
+                                            </p>
+                                            <p class="text-gray-700 w-1/3 text-left">
+                                                @user.fullName
+                                            </p>
+                                            <p class="text-gray-700 w-1/3 text-center">
+                                                @string.Join(", ", user.Roles)
+                                            </p>
+                                            <div class="w-1/3 text-right">
+                                                <button type="button" class="ml-2 text-red-500" onclick="showPopup(@Model.Project.projectId, '@user.Id')" title="Remove User">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    }
                             @if (Model.UserRole.Count > 5)
                             {
                                 <div class="flex justify-center mt-2">
@@ -246,16 +241,16 @@
             showPopupNotification('@TempData.Peek("AddTaskMessage")');
         </script>
     }
-    <div id="popup" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-        <div class="bg-white p-6 rounded-lg shadow-lg">
-            <h2 class="text-xl font-bold mb-4">Confirm Delete</h2>
-            <p id="popupMessage" class="mb-4"></p>
-            <div class="flex justify-end space-x-4">
-                <button class="bg-gray-500 text-white px-4 py-2 rounded" onclick="hidePopup()">Cancel</button>
-                <button id="confirmDelete" class="bg-red-500 text-white px-4 py-2 rounded">Delete</button>
+        <div id="popup" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl font-bold mb-4">Confirm Delete</h2>
+                <p class="mb-4">Are you sure you want to remove this user from the project?</p>
+                <div class="flex justify-end space-x-4">
+                    <button class="bg-gray-500 text-white px-4 py-2 rounded" onclick="hidePopup()">Cancel</button>
+                    <button id="confirmDelete" class="bg-red-500 text-white px-4 py-2 rounded" onclick="confirmDelete()">Delete</button>
+                </div>
             </div>
         </div>
-    </div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
@@ -388,6 +383,72 @@
                 });
             });
         });
+        let currentProjectId, currentUserId;
+
+        function showPopup(projectId, userId) {
+            currentProjectId = projectId;
+            currentUserId = userId;
+            $('#popup').removeClass('hidden'); // Hiển thị popup
+        }
+
+        function hidePopup() {
+            $('#popup').addClass('hidden'); // Ẩn popup
+        }
+        function confirmDelete() {
+            $.ajax({
+                url: '@Url.Action("RemoveUserFromProject", "Project")',
+                type: 'POST',
+                data: { projectId: currentProjectId, userId: currentUserId },
+                success: function (response) {
+                    if (response.success) {
+                        // Xóa thành viên khỏi giao diện
+                        $('#user_' + currentUserId).remove();
+
+                        // Hiển thị thông báo thành công
+                        $('#popupNotification').removeClass('hidden').text(response.message);
+
+                        // Ẩn popup
+                        hidePopup();
+
+                        setTimeout(function () {
+                            $('#popupNotification').addClass('hidden');
+                        }, 3000);
+                    } else {
+                        alert("Error: " + response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("AJAX error:", error);
+                    alert("An error occurred while removing the user.");
+                }
+            });
+        }
+        function removeUserFromProject(projectId, userId) {
+            $.ajax({
+                url: '@Url.Action("RemoveUserFromProject", "Project")',
+                type: 'POST',
+                data: { projectId: projectId, userId: userId },
+                success: function (response) {
+                    if (response.success) {
+                        // Xóa thành viên khỏi giao diện
+                        $('#user_' + userId).remove();
+
+                        // Hiển thị thông báo thành công
+                        $('#popupNotification').removeClass('hidden').text(response.message);
+
+                        setTimeout(function () {
+                            $('#popupNotification').addClass('hidden');
+                        }, 3000);
+                    } else {
+                        alert("Error: " + response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("AJAX error:", error);
+                    alert("An error occurred while removing the user.");
+                }
+            });
+        }
 
 
 

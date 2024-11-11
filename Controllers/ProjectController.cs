@@ -244,6 +244,63 @@ namespace task_management.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> AddUserToProject(int projectId, string userId)
+        {
+            try
+            {
+                // Thêm người dùng vào dự án
+                await _projectService.AddUserToProject(projectId, userId);
+
+                // Lấy thông tin người dùng và vai trò sử dụng GetUsersWithRoles
+                var projectAssignment = new List<ProjectAssignment> { new ProjectAssignment { userId = userId } };
+                var usersWithRoles = await _identityService.GetUsersWithRoles(projectAssignment);
+
+                // Kiểm tra xem người dùng có tồn tại không
+                var addedUser = usersWithRoles.FirstOrDefault();
+                if (addedUser == null)
+                {
+                    return Json(new { success = false, message = "User not found." });
+                }
+
+                // Chuẩn bị JSON trả về
+                var userInfo = new
+                {
+                    id = addedUser.Id,
+                    FullName = addedUser.fullName,
+                    roles = addedUser.Roles.FirstOrDefault(), // Lấy vai trò đầu tiên nếu có nhiều vai trò
+                    imageUrl = addedUser.ImageUrl
+                };
+
+                return Json(new { success = true, message = "User added to the project successfully!", user = userInfo });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Failed to add user to the project.", error = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RemoveUserFromProject(int projectId, string userId)
+        {
+            try
+            {
+                bool isRemoved = await _userService.RemoveUserFromProject(projectId, userId);
+
+                if (!isRemoved)
+                {
+                    return Json(new { success = false, message = "Failed to remove user from the project. User not found or already removed." });
+                }
+
+                return Json(new { success = true, message = "User removed from the project successfully!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Failed to remove user from the project.", error = ex.Message });
+            }
+        }
+
+
+        [HttpPost]
         public async Task<IActionResult> RemoveUserToProject(int projectId, string userId)
         {
             await _projectService.RemoveUserToProject(projectId, userId);
