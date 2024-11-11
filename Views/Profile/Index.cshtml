@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@model task_management.ViewModels.UserDetails;
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -51,47 +52,43 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-4">
-                        <img src="https://storage.googleapis.com/a1aa/image/FiBdZjCeMz3ZdCvWFVP431jFaiiflH9na9Cew3wZZ1aDifLOB.jpg" 
+                        <img src="~/images/@Model.User.PhotoUrl" 
                              alt="User Avatar" class="img-fluid rounded-circle mb-3" style="width: 150px;">
                     </div>
                     <div class="col-md-8">
-                        <h4>John Doe</h4>
-                        <p><strong>Email:</strong> johndoe@example.com</p>
-                        <p><strong>Role:</strong> Manager</p>
-                        <p><strong>Phone Number:</strong> (123) 456-7890</p>
-                        <p><strong>Joined Date:</strong> 2023-01-15</p>
-                        <p><strong>Bio:</strong> Experienced manager with a passion for leading teams and driving projects to successful completion.</p>
+                        <h4>@Model.User.fullName</h4>
+                        <p><strong>Email:</strong> @Model.User.Email</p>
+                        <p><strong>Role:</strong> @Model.RoleNames.Take(1).FirstOrDefault()</p>
+                        <p><strong>Phone Number:</strong> @Model.User.PhoneNumber</p>
+                        <p><strong>Address:</strong> @Model.User.address</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="mt-4">
-            <h5>Recent Activities</h5>
+            <h5>Recent Joint Projects</h5>
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>Activity</th>
+                        <th>Name</th>
                         <th>Date</th>
                         <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Completed quarterly report</td>
-                        <td>2024-09-28</td>
-                        <td><span class="badge badge-success">Completed</span></td>
-                    </tr>
-                    <tr>
-                        <td>Conduct performance reviews</td>
-                        <td>2024-09-07</td>
-                        <td><span class="badge badge-warning">On Hold</span></td>
-                    </tr>
-                    <tr>
-                        <td>Organize teambuilding event</td>
-                        <td>2024-10-28</td>
-                        <td><span class="badge badge-info">Upcoming</span></td>
-                    </tr>
+                    @foreach (var project in Model.Projects)
+                    {
+                        <tr>
+                            <td>
+                                <a asp-controller="Project" asp-action="Details" asp-route-id="@project.projectId">
+                                    @project.name
+                                </a>
+                            </td>
+                            <td>@project.startDate</td>
+                            <td><span class="badge badge-success">@project.status</span></td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>
