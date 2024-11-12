@@ -159,27 +159,6 @@ namespace task_management.Controllers
                 TotalTasks = filteredTasksCount
             };
 
-            Console.WriteLine($"Final result:: {detailProject}");
-            Console.WriteLine("Project Details:");
-            Console.WriteLine($"Project Name: {detailProject.Project?.name}");
-            Console.WriteLine($"Project Description: {detailProject.Project?.description}");
-            // Repeat for other properties in Project...
-
-
-            Console.WriteLine("Tasks:");
-            Console.WriteLine("Start printing");
-            foreach (var task in detailProject.Tasks)
-            {
-                Console.WriteLine($" - Task ID: {task.taskId}, Name: {task.name}, Status: {task.status}");
-            }
-
-            Console.WriteLine($"Selected Task: {detailProject.SelectedTask?.name}");
-            Console.WriteLine($"Page Number: {detailProject.PageNumber}");
-            Console.WriteLine($"Page Size: {detailProject.PageSize}");
-            Console.WriteLine($"Total Tasks: {detailProject.TotalTasks}");
-            Console.WriteLine($"Total Pages: {detailProject.TotalPages}");
-
-
             // Return the partial view with the task details
             return PartialView("_TasksPartial", detailProject);
         }
