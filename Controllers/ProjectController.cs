@@ -65,6 +65,8 @@ namespace task_management.Controllers
 
         public async Task<IActionResult> Details(int id, int pageNumber = 1, int pageSize = 5, int selectedTaskId = 0)
         {
+            Console.WriteLine("Hihi, I'm calling project details");
+
             var project = await _projectService.GetDetailedProject(id);
             if (project == null)
             {
@@ -102,17 +104,24 @@ namespace task_management.Controllers
 
         public async Task<IActionResult> LoadTasks(int projectId, int pageNumber = 1, int pageSize = 5, string searchTerm = "", string status = "", string priority = "", string assignee = "")
         {
+            Console.WriteLine("feel the pain");
             Console.WriteLine($"ProjectId: {projectId}, PageNumber: {pageNumber}, SearchTerm: {searchTerm}, Status: {status}, Priority: {priority}, Assignee: {assignee}");
             // Get team members associated with the project
             var teamMembers = _unitOfWork.ProjectAssignmentRepository.GetTeamMembersByProject(projectId);
 
+            Console.WriteLine($"team members::{teamMembers}");
+
             // Retrieve all tasks associated with the team members in the project
             var allTasks = await _taskService.GetTasksInProjects(teamMembers, 1, int.MaxValue);
+
+            Console.WriteLine($"all tasks::{allTasks}");
 
             // Filter tasks by search term
             var filteredTasks = string.IsNullOrEmpty(searchTerm)
                 ? allTasks.ToList()
                 : allTasks.Where(t => t.name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
+
+            Console.WriteLine($"filter tasks:: {filteredTasks}");
 
             // Apply additional filters if provided
             if (!string.IsNullOrEmpty(status))
@@ -127,7 +136,7 @@ namespace task_management.Controllers
 
             if (!string.IsNullOrEmpty(assignee))
             {
-                filteredTasks = filteredTasks.Where(t => t.userId == assignee).ToList(); // Adjust based on your model
+                filteredTasks = filteredTasks.Where(t => t.userId == assignee).ToList(); 
             }
 
             // Count of filtered tasks
@@ -149,6 +158,27 @@ namespace task_management.Controllers
                 PageSize = pageSize,
                 TotalTasks = filteredTasksCount
             };
+
+            Console.WriteLine($"Final result:: {detailProject}");
+            Console.WriteLine("Project Details:");
+            Console.WriteLine($"Project Name: {detailProject.Project?.name}");
+            Console.WriteLine($"Project Description: {detailProject.Project?.description}");
+            // Repeat for other properties in Project...
+
+
+            Console.WriteLine("Tasks:");
+            Console.WriteLine("Start printing");
+            foreach (var task in detailProject.Tasks)
+            {
+                Console.WriteLine($" - Task ID: {task.taskId}, Name: {task.name}, Status: {task.status}");
+            }
+
+            Console.WriteLine($"Selected Task: {detailProject.SelectedTask?.name}");
+            Console.WriteLine($"Page Number: {detailProject.PageNumber}");
+            Console.WriteLine($"Page Size: {detailProject.PageSize}");
+            Console.WriteLine($"Total Tasks: {detailProject.TotalTasks}");
+            Console.WriteLine($"Total Pages: {detailProject.TotalPages}");
+
 
             // Return the partial view with the task details
             return PartialView("_TasksPartial", detailProject);
