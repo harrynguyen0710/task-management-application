@@ -94,14 +94,14 @@ namespace task_management.Controllers
             return View(model);
         }
 
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
 
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpPost]
         public async Task<IActionResult> Create(Users user)
         {
@@ -130,7 +130,7 @@ namespace task_management.Controllers
             await _authService.CreateAccount(user);
             return RedirectToAction("AllUsers", "Account");
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         public async Task<IActionResult> AllUsers(int projectId)
         {
             var allUsers = await _userSerivce.GetAllUsersWithProjectStatusAsync(projectId);
