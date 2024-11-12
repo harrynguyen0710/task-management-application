@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using task_management.Services;
 using task_management.ViewModels;
 
 namespace task_management.Controllers
 {
+    [Authorize]
     public class TaskController : Controller
     {
         private readonly TaskService _taskService;

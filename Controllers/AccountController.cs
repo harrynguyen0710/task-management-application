@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using task_management.Models;
 using task_management.Services;
 
 namespace task_management.Controllers
 {
-    public class AuthController : Controller
+    public class AccountController : Controller
     {
         private readonly IdentityService _authService;
         private readonly UserManager<Users> _userManager;
@@ -13,7 +14,7 @@ namespace task_management.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserService _userSerivce;
 
-        public AuthController(IdentityService authService, UserManager<Users> userManager,
+        public AccountController(IdentityService authService, UserManager<Users> userManager,
             EmailService emailService, RoleManager<IdentityRole> roleManager, UserService userService)
         {
             _authService = authService;
@@ -47,13 +48,13 @@ namespace task_management.Controllers
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
             // Create a path to reset password
-            var resetLink = Url.Action("RenewPassword", "Auth", new { userId = user.Id, Token = token }, Request.Scheme);
+            var resetLink = Url.Action("RenewPassword", "Account", new { userId = user.Id, Token = token }, Request.Scheme);
 
             // Send email with password reset link
             await _emailService.SendEmailAsync(email, "Reset Password", $"Please click on the following link to reset your password.: <a href='{resetLink}'>Reset Password</a>. If you did not request a password change, please ignore this email.");
 
             ViewBag.Message = "Reset password link has been sent to your email.";
-            return RedirectToAction("Login", "Auth");
+            return RedirectToAction("Login", "Account");
         }
         [HttpGet]
         public IActionResult RenewPassword(string userId, string token)
@@ -79,7 +80,6 @@ namespace task_management.Controllers
             {
                 return RedirectToAction("Login");
             }
-
             var result = await _userManager.ResetPasswordAsync(user, model.Token, model.NewPassword);
             if (result.Succeeded)
             {
@@ -94,14 +94,16 @@ namespace task_management.Controllers
             return View(model);
         }
 
+        [Authorize("Manager")]
         [HttpGet]
-        public IActionResult CreateAccount()
+        public IActionResult Create()
         {
             return View();
         }
 
+        [Authorize("Manager")]
         [HttpPost]
-        public async Task<IActionResult> CreateAccount(Users user)
+        public async Task<IActionResult> Create(Users user)
         {
             var email = user.Email?.Trim();
             var username = user.UserName?.Trim();
@@ -126,9 +128,9 @@ namespace task_management.Controllers
             }
 
             await _authService.CreateAccount(user);
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("AllUsers", "Account");
         }
-
+        [Authorize("Manager")]
         public async Task<IActionResult> AllUsers(int projectId)
         {
             var allUsers = await _userSerivce.GetAllUsersWithProjectStatusAsync(projectId);
@@ -136,20 +138,27 @@ namespace task_management.Controllers
             return View(allUsers);
         }
 
-        public IActionResult Login()
+        public IActionResult Login(string ReturnUrl = null)
         {
+            Console.WriteLine(ReturnUrl);
+            ViewData["returnUrl"] = ReturnUrl;
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(string email, string password)
+        public async Task<IActionResult> Login(string email, string password, string ReturnUrl = null)
         {
             if (await _authService.Login(email, password))
             {
-                return RedirectToAction("Index", "Auth");
+
+                if (Url.IsLocalUrl(ReturnUrl))
+                {
+                    return LocalRedirect(ReturnUrl);
+                }
+                return RedirectToAction("Index", "Profile");
             }
             ModelState.AddModelError(string.Empty, "Password or Email is incorrect. Please re-enter!");
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Account", "Login");
         }
 
         public async Task<IActionResult> Logout()
