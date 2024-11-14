@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Identity
 @model task_management.Models.Users
 @{
     Layout = null;
@@ -42,7 +42,8 @@
                 }
             </div>
             <div class="flex items-center justify-between mb-4">
-                <a class="inline-block align-baseline font-bold text-sm text-gray-500 hover:text-gray-800" asp-action="CheckMail" asp-controller="Auth">
+                <a class="inline-block align-baseline font-bold text-sm text-gray-500 hover:text-gray-800" asp-action="CheckMail" asp-controller="Account">
+
                     Forgot password?
                 </a>
             </div>
@@ -53,12 +54,6 @@
             </div>
         </form>
 
-        <p class="text-center text-gray-500 text-xs">
-            No account?
-            <a class="text-black font-bold" href="#">
-                Sign up
-            </a>
-        </p>
     </div>
 </body>
 </html>

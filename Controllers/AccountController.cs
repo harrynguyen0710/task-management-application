@@ -80,6 +80,7 @@ namespace task_management.Controllers
             {
                 return RedirectToAction("Login");
             }
+
             var result = await _userManager.ResetPasswordAsync(user, model.Token, model.NewPassword);
             if (result.Succeeded)
             {
@@ -94,14 +95,12 @@ namespace task_management.Controllers
             return View(model);
         }
 
-        //[Authorize("Manager")]
         [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
 
-        //[Authorize("Manager")]
         [HttpPost]
         public async Task<IActionResult> Create(Users user)
         {
@@ -130,7 +129,7 @@ namespace task_management.Controllers
             await _authService.CreateAccount(user);
             return RedirectToAction("AllUsers", "Account");
         }
-        //[Authorize("Manager")]
+
         public async Task<IActionResult> AllUsers(int projectId)
         {
             var allUsers = await _userSerivce.GetAllUsersWithProjectStatusAsync(projectId);
@@ -158,7 +157,7 @@ namespace task_management.Controllers
                 return RedirectToAction("Index", "Profile");
             }
             ModelState.AddModelError(string.Empty, "Password or Email is incorrect. Please re-enter!");
-            return RedirectToAction("Account", "Login");
+            return RedirectToAction("Login", "Account");
         }
 
         public async Task<IActionResult> Logout()
@@ -167,4 +166,5 @@ namespace task_management.Controllers
             return RedirectToAction("Login");
         }
     }
+
 }
