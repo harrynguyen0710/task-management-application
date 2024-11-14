@@ -37,9 +37,11 @@ namespace task_management.Services
         {
             var projectAssignments = _unitOfWork.ProjectAssignmentRepository.GetTeamMembersByProject(projectId);
 
-            var teamMembers = await Task.WhenAll(projectAssignments
-                .Select(async assignment => await _userManager.FindByIdAsync(assignment.userId))
-                .Where(user => user != null));
+            var teamMembers = projectAssignments
+                .Select(assignment => _userManager.FindByIdAsync(assignment.userId).Result)
+                .Where(user => user != null)
+                .ToList();
+
 
             await _unitOfWork.CompleteAsync();
 

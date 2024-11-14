@@ -1,5 +1,4 @@
-﻿@using Microsoft.AspNetCore.Identity
-@model task_management.Models.Users
+﻿@model task_management.Models.Users
 @{
     Layout = null;
 }
@@ -20,7 +19,7 @@
                 Welcome!
             </p>
         </div>
-        <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" method="post" action="/Auth/Login">
+        <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" method="post" action="@Url.Action("Login", "Account", new { ReturnUrl = ViewData["returnUrl"] })">
             <div class="mb-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
                     Email
@@ -42,7 +41,7 @@
                 }
             </div>
             <div class="flex items-center justify-between mb-4">
-                <a class="inline-block align-baseline font-bold text-sm text-gray-500 hover:text-gray-800" asp-action="CheckMail" asp-controller="Auth">
+                <a class="inline-block align-baseline font-bold text-sm text-gray-500 hover:text-gray-800" asp-action="CheckMail" asp-controller="Account">
                     Forgot password?
                 </a>
             </div>
@@ -53,12 +52,7 @@
             </div>
         </form>
 
-        <p class="text-center text-gray-500 text-xs">
-            No account?
-            <a class="text-black font-bold" href="#">
-                Sign up
-            </a>
-        </p>
+       
     </div>
 </body>
 </html>

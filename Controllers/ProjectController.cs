@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using task_management.IRepositories;
 using task_management.Models;
@@ -7,6 +8,7 @@ using task_management.ViewModels;
 
 namespace task_management.Controllers
 {
+    [Authorize]
     public class ProjectController : Controller
     {
         private readonly ProjectService _projectService;
@@ -65,8 +67,6 @@ namespace task_management.Controllers
 
         public async Task<IActionResult> Details(int id, int pageNumber = 1, int pageSize = 5, int selectedTaskId = 0)
         {
-            Console.WriteLine("Hihi, I'm calling project details");
-
             var project = await _projectService.GetDetailedProject(id);
             if (project == null)
             {
@@ -104,24 +104,17 @@ namespace task_management.Controllers
 
         public async Task<IActionResult> LoadTasks(int projectId, int pageNumber = 1, int pageSize = 5, string searchTerm = "", string status = "", string priority = "", string assignee = "")
         {
-            Console.WriteLine("feel the pain");
-            Console.WriteLine($"ProjectId: {projectId}, PageNumber: {pageNumber}, SearchTerm: {searchTerm}, Status: {status}, Priority: {priority}, Assignee: {assignee}");
             // Get team members associated with the project
             var teamMembers = _unitOfWork.ProjectAssignmentRepository.GetTeamMembersByProject(projectId);
 
-            Console.WriteLine($"team members::{teamMembers}");
-
             // Retrieve all tasks associated with the team members in the project
             var allTasks = await _taskService.GetTasksInProjects(teamMembers, 1, int.MaxValue);
-
-            Console.WriteLine($"all tasks::{allTasks}");
 
             // Filter tasks by search term
             var filteredTasks = string.IsNullOrEmpty(searchTerm)
                 ? allTasks.ToList()
                 : allTasks.Where(t => t.name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
 
-            Console.WriteLine($"filter tasks:: {filteredTasks}");
 
             // Apply additional filters if provided
             if (!string.IsNullOrEmpty(status))
