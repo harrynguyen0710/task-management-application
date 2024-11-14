@@ -11,7 +11,7 @@ namespace task_management.Services
         public ProjectService(IUnitOfWork unitOfWork, IdentityService identityService)
         {
             _unitOfWork = unitOfWork;
-            _identityService = identityService;
+            _identityService = identityService; 
         }
 
         public async Task<IEnumerable<Project>> GetAllProjectsAsync()
