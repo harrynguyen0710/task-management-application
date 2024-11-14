@@ -38,7 +38,7 @@ namespace task_management.Services
         /// <returns>A list of tasks</returns>
         public async Task<IEnumerable<Tasks>> GetTasksByUserId(string userId)
         {
-            var tasks =  _unitOfWork.TaskRepository.GetTasksByUserId(userId);
+            var tasks = _unitOfWork.TaskRepository.GetTasksByUserId(userId);
             await _unitOfWork.CompleteAsync();
             return tasks;
         }
@@ -76,11 +76,11 @@ namespace task_management.Services
             var assignments = _unitOfWork.ProjectAssignmentRepository.GetTeamMembersByProject(projectId);
             var count = 0;
 
-            foreach(var assignment in assignments)
+            foreach (var assignment in assignments)
             {
                 count += _unitOfWork.TaskRepository.GetTotalTask(assignment.userId);
             }
-            
+
             return count;
         }
 
@@ -91,16 +91,29 @@ namespace task_management.Services
             await _unitOfWork.CompleteAsync();
         }
 
-     /*   public async Task GetTasksByUserId(string userId)
-        {
+        /*   public async Task GetTasksByUserId(string userId)
+           {
 
-        }*/
+           }*/
 
         public async Task<Tasks> GetTaskByIdAsync(int id)
-        {   
-            return await _unitOfWork.TaskRepository.GetTaskById(id);   
+        {
+            return await _unitOfWork.TaskRepository.GetTaskById(id);
         }
+        public async Task<IEnumerable<Tasks>> GetTasksByProjectId(int projectId)
+        {
+            var assignments = _unitOfWork.ProjectAssignmentRepository.GetTeamMembersByProject(projectId);
 
+            var tasksInProject = new List<Tasks>();
+
+            foreach (var assignment in assignments)
+            {
+                var userTasks = await GetTasksByUserId(assignment.userId);
+                tasksInProject.AddRange(userTasks);
+            }
+
+            return tasksInProject;
+        }
 
     }
 }

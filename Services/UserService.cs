@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using task_management.Data;
 using task_management.IRepositories;
 using task_management.Models;
 using task_management.ViewModels;
@@ -13,10 +15,11 @@ namespace task_management.Services
         private readonly ProjectService _projectService;
         private readonly TaskService _taskService;
         private readonly IdentityService _identityService;
+        private readonly ApplicationDbContext _context;
 
         public UserService(UserManager<Users> userManager, RoleManager<IdentityRole> roleManager,
             IUnitOfWork unitOfWork, ProjectService projectService, TaskService taskService,
-            IdentityService identityService)
+            IdentityService identityService, ApplicationDbContext context)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -24,6 +27,7 @@ namespace task_management.Services
             _unitOfWork = unitOfWork;
             _taskService = taskService;
             _identityService = identityService;
+            _context = context;
         }
 
         public async Task<IEnumerable<Users>> GetAllUsersAsync()
@@ -145,6 +149,10 @@ namespace task_management.Services
             await _unitOfWork.CompleteAsync();
 
             return true; // Xóa thành công
+        }
+        public async Task<Tasks> GetTaskById(int taskId)
+        {
+            return await _context.Tasks.FirstOrDefaultAsync(t => t.taskId == taskId);
         }
 
     }

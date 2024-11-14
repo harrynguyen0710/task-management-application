@@ -1,0 +1,95 @@
+﻿@model task_management.Models.Tasks
+
+<div id="taskDetail-@Model.taskId" class="hidden">
+    <h2 class="text-2xl font-bold mb-4 text-center">Task Details</h2>
+
+    <div class="space-y-3">
+        <!-- Task Name -->
+        <div class="flex">
+            <strong class="mr-2">Task Name:</strong>
+            <span>@Model.name</span>
+        </div>
+
+        <!-- Priority and Assignee in the same row, with Assignee shifted left -->
+        <div class="flex justify-between">
+            <div class="flex items-center">
+                <strong class="mr-2">Priority:</strong>
+                @{
+                    var priorityClass = Model.priority switch
+                    {
+                        "High" => "bg-red-500 text-white",
+                        "Medium" => "bg-yellow-500 text-black",
+                        "Low" => "bg-green-500 text-white",
+                        _ => "bg-gray-500 text-white"
+                    };
+                }
+                <span class="px-3 py-1 rounded-full @priorityClass">@Model.priority</span>
+            </div>
+            <div class="flex items-center ml-6 w-1/2">
+                <strong class="mr-2">Assignee:</strong>
+                <span>@Model.User?.fullName</span>
+            </div>
+        </div>
+
+        <!-- Start Date and End Date in the same row, with End Date shifted left -->
+        <div class="flex justify-between">
+            <div class="flex items-center">
+                <strong class="mr-2">Start Date:</strong>
+                <span>@Model.startDate.ToString("yyyy-MM-dd")</span>
+            </div>
+            <div class="flex items-center ml-6 w-1/2">
+                <strong class="mr-2">End Date:</strong>
+                <span>@Model.dueDate.ToString("yyyy-MM-dd")</span>
+            </div>
+        </div>
+
+        <!-- Status with conditional color class -->
+        <div class="flex">
+            <strong class="mr-2">Status:</strong>
+            @{
+                var statusClass = Model.status switch
+                {
+                    "Completed" => "bg-green-500 text-white",
+                    "In Progress" => "bg-blue-500 text-white",
+                    "Due" => "bg-red-500 text-white",
+                    _ => "bg-gray-500 text-white"
+                };
+            }
+            <span class="px-3 py-1 rounded-full @statusClass">@Model.status</span>
+        </div>
+
+        <!-- Description -->
+        <div class="flex">
+            <strong class="mr-2">Description:</strong>
+            <p class="text-gray-700">@Model.description</p>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Priority and Status Badge Styling */
+    .bg-red-500 {
+        background-color: #f56565;
+        color: white;
+    }
+
+    .bg-yellow-500 {
+        background-color: #ecc94b;
+        color: black;
+    }
+
+    .bg-green-500 {
+        background-color: #48bb78;
+        color: white;
+    }
+
+    .bg-blue-500 {
+        background-color: #4299e1;
+        color: white;
+    }
+
+    .bg-gray-500 {
+        background-color: #a0aec0;
+        color: white;
+    }
+</style>

@@ -5,8 +5,11 @@ namespace task_management.ViewModels
     public class UserDetails
     {
         public Users User { get; set; }
-        public IEnumerable<Tasks> Tasks {  get; set; } 
+        public Tasks Task { get; set; }
+        public Project Project { get; set; }
+        public IEnumerable<Tasks> Tasks { get; set; }
         public IEnumerable<Project> Projects { get; set; }
-        public IEnumerable<string> RoleNames { get; set; }  
+        public IEnumerable<string> RoleNames { get; set; }
     }
+
 }
