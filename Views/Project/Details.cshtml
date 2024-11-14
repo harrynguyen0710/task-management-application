@@ -263,9 +263,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
         function loadTasks(pageNumber, searchTerm = '', status = '', priority = '', assignee = '') {
-            console.log('Dit me cuoc doi');
-            console.log('final search item::', searchTerm);
-            console.log('--------------');
             $.ajax({
                 url: '@Url.Action("LoadTasks", "Project")',
                 type: 'GET',

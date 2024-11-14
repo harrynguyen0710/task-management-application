@@ -75,10 +75,12 @@ namespace task_management.Services
         {
             var assignments = _unitOfWork.ProjectAssignmentRepository.GetTeamMembersByProject(projectId);
             var count = 0;
+
             foreach(var assignment in assignments)
             {
                 count += _unitOfWork.TaskRepository.GetTotalTask(assignment.userId);
             }
+            
             return count;
         }
 

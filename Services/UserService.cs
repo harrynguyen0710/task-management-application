@@ -73,8 +73,6 @@ namespace task_management.Services
                 Tasks = jointTasks,
             };
             return detailedUser;
-
-
         }
 
 
