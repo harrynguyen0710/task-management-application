@@ -3,71 +3,104 @@
 @{
     ViewData["Title"] = "Add Task";
 }
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Task</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.0/dist/tailwind.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body class="bg-gray-100 text-gray-900">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div>
+            @Html.Partial("_SidebarPartial")
+        </div>
 
-<h1>Add Task</h1>
+        <!-- Main Content Area -->
+        <div class="flex-1 container mx-auto p-6 overflow-y-auto">
+            <h1 class="text-3xl font-bold mb-6">Add Task</h1>
 
-<form asp-action="AddTask" method="post">
-    <input type="hidden" asp-for="@Model.projectId" />
+            <!-- Frame for Task Information Form -->
+            <div class="bg-white p-8 rounded-lg shadow-md">
+                <form asp-action="AddTask" method="post" class="space-y-4">
+                    <input type="hidden" asp-for="@Model.projectId" />
 
-    <div class="form-group">
-        <label asp-for="@Model.Tasks.name" class="control-label"></label>
-        <input asp-for="@Model.Tasks.name" class="form-control" />
-        <span asp-validation-for="@Model.Tasks.name" class="text-danger"></span>
+                    <!-- Task Name -->
+                    <div>
+                        <label asp-for="@Model.Tasks.name" class="block text-gray-700 font-semibold mb-1">Task Name</label>
+                        <input asp-for="@Model.Tasks.name" class="w-full border border-gray-300 p-2 rounded" />
+                        <span asp-validation-for="@Model.Tasks.name" class="text-red-500 text-sm"></span>
+                    </div>
+
+                    <!-- Description -->
+                    <div>
+                        <label asp-for="@Model.Tasks.description" class="block text-gray-700 font-semibold mb-1">Description</label>
+                        <textarea asp-for="@Model.Tasks.description" class="w-full border border-gray-300 p-2 rounded" rows="4"></textarea>
+                        <span asp-validation-for="@Model.Tasks.description" class="text-red-500 text-sm"></span>
+                    </div>
+
+                    <!-- Start Date -->
+                    <div>
+                        <label asp-for="@Model.Tasks.startDate" class="block text-gray-700 font-semibold mb-1">Start Date</label>
+                        <input asp-for="@Model.Tasks.startDate" class="w-full border border-gray-300 p-2 rounded" type="date" />
+                        <span asp-validation-for="@Model.Tasks.startDate" class="text-red-500 text-sm"></span>
+                    </div>
+
+                    <!-- Due Date -->
+                    <div>
+                        <label asp-for="@Model.Tasks.dueDate" class="block text-gray-700 font-semibold mb-1">Due Date</label>
+                        <input asp-for="@Model.Tasks.dueDate" class="w-full border border-gray-300 p-2 rounded" type="date" />
+                        <span asp-validation-for="@Model.Tasks.dueDate" class="text-red-500 text-sm"></span>
+                    </div>
+
+                    <!-- Status -->
+                    <div>
+                        <label asp-for="@Model.Tasks.status" class="block text-gray-700 font-semibold mb-1">Status</label>
+                        <select asp-for="@Model.Tasks.status" class="w-full border border-gray-300 p-2 rounded">
+                            <option value="">-- Select Status --</option>
+                            <option value="Due">Due</option>
+                            <option value="Completed">Completed</option>
+                            <option value="In Progress">In Progress</option>
+                        </select>
+                        <span asp-validation-for="@Model.Tasks.status" class="text-red-500 text-sm"></span>
+                    </div>
+
+                    <!-- Priority -->
+                    <div>
+                        <label asp-for="@Model.Tasks.priority" class="block text-gray-700 font-semibold mb-1">Priority</label>
+                        <select asp-for="@Model.Tasks.priority" class="w-full border border-gray-300 p-2 rounded">
+                            <option value="">-- Select Priority --</option>
+                            <option value="High">High</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Low">Low</option>
+                        </select>
+                        <span asp-validation-for="@Model.Tasks.priority" class="text-red-500 text-sm"></span>
+                    </div>
+
+                    <!-- Select User -->
+                    <div>
+                        <label for="userSelect" class="block text-gray-700 font-semibold mb-1">Assign to User</label>
+                        <select asp-for="@Model.Tasks.userId" class="w-full border border-gray-300 p-2 rounded" asp-items="ViewBag.AvailableUsers">
+                            <option value="">-- Select User --</option>
+                        </select>
+                        <span asp-validation-for="@Model.Tasks.userId" class="text-red-500 text-sm"></span>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex justify-end space-x-4 mt-4">
+                        <a asp-action="Details" asp-controller="Project" asp-route-id="@Model.projectId" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+                            Back to Project
+                        </a>
+                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                            Create Task
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-
-    <div class="form-group">
-        <label asp-for="@Model.Tasks.description" class="control-label"></label>
-        <textarea asp-for="@Model.Tasks.description" class="form-control"></textarea>
-        <span asp-validation-for="@Model.Tasks.description" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="@Model.Tasks.startDate" class="control-label"></label>
-        <input asp-for="@Model.Tasks.startDate" class="form-control" type="date" />
-        <span asp-validation-for="@Model.Tasks.startDate" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="@Model.Tasks.dueDate" class="control-label"></label>
-        <input asp-for="@Model.Tasks.dueDate" class="form-control" type="date" />
-        <span asp-validation-for="@Model.Tasks.dueDate" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="@Model.Tasks.status" class="control-label"></label>
-        <select asp-for="@Model.Tasks.status" class="form-control">
-            <option value="">-- Select Status --</option>
-            <option value="Due">Due</option>
-            <option value="Completed">Completed</option>
-            <option value="In Progress">In Progress</option>
-        </select>
-        <span asp-validation-for="@Model.Tasks.status" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="@Model.Tasks.priority" class="control-label"></label>
-        <select asp-for="@Model.Tasks.priority" class="form-control">
-            <option value="">-- Select Priority --</option>
-            <option value="High">High</option>
-            <option value="Medium">Medium</option>
-            <option value="Low">Low</option>
-        </select>
-        <span asp-validation-for="@Model.Tasks.priority" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label for="userSelect" class="control-label">Select User</label>
-        <select asp-for="@Model.Tasks.userId" class="form-control" asp-items="ViewBag.AvailableUsers">
-            <option value="">-- Select User --</option>
-        </select>
-        <span asp-validation-for="@Model.Tasks.userId" class="text-danger"></span>
-    </div>
-
-
-    <button type="submit" class="btn btn-primary">Create Task</button>
-</form>
-
-<a asp-action="Details" asp-controller="Project" asp-route-id="@Model.projectId" class="btn btn-secondary">Back to Project</a>
+</body>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
