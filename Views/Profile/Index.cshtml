@@ -81,11 +81,11 @@
                 <h5 class="text-lg font-semibold mb-4">User Information</h5>
                 <div class="flex items-center">
                     <div class="w-1/3 flex justify-center">
-                        <img src="https://storage.googleapis.com/a1aa/image/FiBdZjCeMz3ZdCvWFVP431jFaiiflH9na9Cew3wZZ1aDifLOB.jpg"
+                        <img src="~/images/@Model.User.PhotoUrl"
                              alt="User Avatar" class="avatar-image mb-3">
                     </div>
                     <div class="w-2/3 space-y-2">
-                        <h4 class="text-2xl font-semibold">John Doe</h4>
+                        <h4 class="text-2xl font-semibold">@Model.User.fullName</h4>
                         <p><strong>Email: </strong>@Model.User.Email</p>
                         <p><strong>Role: </strong> @Model.RoleNames.FirstOrDefault()</p>
                         <p><strong>Phone Number: </strong> @Model.User.PhoneNumber</p>
@@ -106,24 +106,18 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td class="py-2 px-4 border-b">Completed quarterly report</td>
-                            <td class="py-2 px-4 border-b">2024-09-28</td>
-                            <td class="py-2 px-4 border-b"><span class="badge-completed py-1 px-3 rounded-full text-xs">Completed</span></td>
-                        </tr>
-                        <tr>
-                            <td class="py-2 px-4 border-b">Conduct performance reviews</td>
-                            <td class="py-2 px-4 border-b">2024-09-07</td>
-                            <td class="py-2 px-4 border-b"><span class="badge-onhold py-1 px-3 rounded-full text-xs">On Hold</span></td>
-                        </tr>
-                        <tr>
-                            <td class="py-2 px-4 border-b">Organize teambuilding event</td>
-                            <td class="py-2 px-4 border-b">2024-10-28</td>
-                            <td class="py-2 px-4 border-b"><span class="badge-upcoming py-1 px-3 rounded-full text-xs">Upcoming</span></td>
-                        </tr>
+                        @foreach(var task in Model.Tasks)
+                        {
+                            <tr>
+                                <td class="py-2 px-4 border-b">@task.name</td>
+                                <td class="py-2 px-4 border-b">@task.startDate</td>
+                                <td class="py-2 px-4 border-b"><span class="badge-completed py-1 px-3 rounded-full text-xs">@task.status</span></td>
+                            </tr>
+                        }
+                        
                     </tbody>
                 </table>
-                <form method="post" action="/Auth/Logout">
+                <form method="post" action="/Account/Logout">
                     <button type="submit" class="btn-custom">Logout</button>
                 </form>
             </div>
