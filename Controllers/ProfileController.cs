@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using task_management.Data;
 using task_management.Models;
 using task_management.Services;
+using task_management.ViewModels;
 
 namespace task_management.Controllers
 {
@@ -15,18 +16,26 @@ namespace task_management.Controllers
         private readonly UserService _userService;
         private readonly IdentityService _identityService;
         private readonly UserManager<Users> _userManager;
+        private readonly ProjectService _projectService;
+        private readonly TaskService _taskService;
         private readonly ApplicationDbContext _context;
 
-        public ProfileController(ILogger<ProfileController> logger, UserService userService, 
-            UserManager<Users> userManager, IdentityService identityService, ApplicationDbContext context)
+        public ProfileController(ILogger<ProfileController> logger, UserService userService,
+            UserManager<Users> userManager, IdentityService identityService, ProjectService projectService,
+            TaskService taskService, ApplicationDbContext context)
+
         {
             _logger = logger;
             _userService = userService;
             _userManager = userManager;
-            _identityService = identityService; 
+            _identityService = identityService;
+            _projectService = projectService;
+            _taskService = taskService;
             _context = context;
-            
+
         }
+
+
 
         public async Task<IActionResult>Index(string userId)
         {
@@ -45,7 +54,42 @@ namespace task_management.Controllers
             return View(detailedUser);
         }
 
-        
+        [HttpGet("Profile/GetTaskDetails/{taskId}")]
+        public async Task<IActionResult> GetTaskDetails(int taskId)
+        {
+            var task = await _userService.GetTaskById(taskId);
+            if (task == null)
+            {
+                return NotFound();
+            }
+
+            var userProjects = await _projectService.GetProjectsByUserId(task.userId);
+
+            Project project = null;
+            foreach (var userProject in userProjects)
+            {
+                var tasksInProject = await _taskService.GetTasksByProjectId(userProject.projectId);
+                if (tasksInProject.Any(t => t.taskId == taskId))
+                {
+                    project = userProject;
+                    break;
+                }
+            }
+
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            var userDetails = new UserDetails
+            {
+                Task = task,
+                Project = project,
+                User = task.User
+            };
+
+            return PartialView("_UsersDetailTaskPartial", userDetails);
+        }
 
     }
 }
