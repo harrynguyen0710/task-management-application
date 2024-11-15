@@ -97,37 +97,32 @@
             <!-- Recent Activities Frame -->
             <div class="frame">
                 <h5 class="text-lg font-semibold mb-4">Recent Activities</h5>
-                <div id="taskSection">
-                    <table class="min-w-full bg-white rounded-lg overflow-hidden">
-                        <thead class="bg-gray-200">
-                            <tr>
-                                <th class="py-2 px-4 border-b text-left">Activity</th>
-                                <th class="py-2 px-4 border-b text-left">Date</th>
-                                <th class="py-2 px-4 border-b text-left">Status</th>
-                                <th class="py-2 px-4 border-b text-left"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var task in Model.Tasks)
-                            {
-                                <tr>
-                                    <td class="py-2 px-4 border-b">@task.name</td>
-                                    <td class="py-2 px-4 border-b">@task.startDate.ToString("yyyy-MM-dd")</td>
-                                    <td class="py-2 px-4 border-b">
-                                        @* Apply predefined CSS class based on task.status *@
-                                        <span class="badge @($"badge-{task.status.Replace(" ", "-").ToLower()}")">
-                                            @task.status
-                                        </span>
-                                    </td>
-                                    <td class="py-2 px-4 border-b text-center">
-                                        <i class="fas fa-eye text-blue-500 cursor-pointer" onclick="showTaskDetails(@task.taskId)" title="View Details"></i>
-                                    </td>
-                                </tr>
-                                @Html.Partial("_UsersDetailTaskPartial", task)
-                            }
-                        </tbody>
-                    </table>
-                </div>
+
+                    <div id="taskSection">
+                        @await Html.PartialAsync("_TasksTablePartial", Model.Tasks)
+                    </div>
+
+
+                    <!-- Pagination Controls -->
+                    <div class="mt-4 flex justify-center space-x-2">
+                        @if (ViewBag.CurrentPage > 1)
+                        {
+                            <button onclick="loadTasks(@(ViewBag.CurrentPage - 1))" class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400">Previous</button>
+                        }
+
+                        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                        {
+                            <button onclick="loadTasks(@i)" class="px-3 py-1 @(i == ViewBag.CurrentPage ? "bg-blue-500 text-white" : "bg-gray-300 hover:bg-gray-400") rounded">
+                                @i
+                            </button>
+                        }
+
+                        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                        {
+                            <button onclick="loadTasks(@(ViewBag.CurrentPage + 1))" class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400">Next</button>
+                        }
+                    </div>
+
 
                 <form method="post" action="/Account/Logout">
                     <button type="submit" class="btn-custom">Logout</button>
@@ -151,8 +146,27 @@
 </div>
 
 <script>
+    loadTasks(1);
+
+       function loadTasks(pageNumber) {
+        const userId = '@Model.User.Id';
+        $.ajax({
+            url: '@Url.Action("GetTasksPartial")',
+            type: 'GET',
+            data: { userId: userId, pageNumber: pageNumber },
+            success: function (data) {
+                $('#taskSection').html(data);
+            },
+            error: function () {
+                alert("Failed to load tasks.");
+            }
+        });
+    }
     function showTaskDetails(taskId) {
+        console.log('This is task id::', taskId);
+        console.log('Nguyen Ngoc Hoang');
         const taskContent = document.getElementById(`taskDetail-${taskId}`).innerHTML;
+        console.log('task content::', taskContent);
         document.getElementById("taskModalContent").innerHTML = taskContent;
         document.getElementById("taskModal").classList.remove("hidden"); // Show pop-up
     }

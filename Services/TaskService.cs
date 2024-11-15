@@ -36,12 +36,25 @@ namespace task_management.Services
         /// </summary>
         /// <param name="userId"></param>
         /// <returns>A list of tasks</returns>
+        public async Task<IEnumerable<Tasks>> GetTasksByUserId(string userId, int pageNumber = 1, int pageSize = 6)
+        {
+            var tasks = await _unitOfWork.TaskRepository.GetTasksByUserId(userId, pageNumber, pageSize);
+            await _unitOfWork.CompleteAsync();
+            return tasks;
+        }
+
         public async Task<IEnumerable<Tasks>> GetTasksByUserId(string userId)
         {
             var tasks = _unitOfWork.TaskRepository.GetTasksByUserId(userId);
             await _unitOfWork.CompleteAsync();
             return tasks;
         }
+
+        public async Task<double> GetTotalUserTask(string userId)
+        {
+            return await _unitOfWork.TaskRepository.GetTotalUserTask(userId);
+        }
+
 
         /// <summary>
         /// Get all tasks of a project, joint by staff id (staff joint project) with pagination
@@ -90,11 +103,6 @@ namespace task_management.Services
             _unitOfWork.TaskRepository.InActive(task);
             await _unitOfWork.CompleteAsync();
         }
-
-        /*   public async Task GetTasksByUserId(string userId)
-           {
-
-           }*/
 
         public async Task<Tasks> GetTaskByIdAsync(int id)
         {

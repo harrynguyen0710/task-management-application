@@ -35,24 +35,45 @@ namespace task_management.Controllers
 
         }
 
-
-
-        public async Task<IActionResult>Index(string userId)
+        public async Task<IActionResult> Index(string userId, int pageNumber = 1, int pageSize = 6)
         {
-            var user = new Users();
-            if(userId == null)
-            {
-                user = await _userManager.GetUserAsync(User);
-            } else
-            {
-                user = await _context.Users.Where(u => u.Id == userId).FirstOrDefaultAsync();
-            }
+            var user = userId == null
+                ? await _userManager.GetUserAsync(User)
+                : await _context.Users.Where(u => u.Id == userId).FirstOrDefaultAsync();
+
             var userRoles = await _identityService.GetUserRole(user);
             var detailedUser = await _userService.GetDetailUser(user.Id);
+
+            // Get tasks for the first page
+            var tasks = await _taskService.GetTasksByUserId(userId, pageNumber, pageSize);
             detailedUser.RoleNames = userRoles;
             detailedUser.User = user;
+            detailedUser.Tasks = tasks;
+
+            double taskCounts = await _taskService.GetTotalUserTask(user.Id);
+
+            ViewBag.CurrentPage = pageNumber;
+            ViewBag.TotalPages = (int)Math.Ceiling(taskCounts / pageSize);
+
             return View(detailedUser);
         }
+
+
+        public async Task<IActionResult> GetTasksPartial(string userId, int pageNumber = 1, int pageSize = 6)
+        {
+            var tasks = await _taskService.GetTasksByUserId(userId, pageNumber, pageSize);
+            double taskCounts = await _taskService.GetTotalUserTask(userId);
+
+            ViewBag.CurrentPage = pageNumber;
+            ViewBag.TotalPages = (int)Math.Ceiling(taskCounts / pageSize);
+
+            return PartialView("_TasksTablePartial", tasks);
+        }
+
+
+
+
+
 
         [HttpGet("Profile/GetTaskDetails/{taskId}")]
         public async Task<IActionResult> GetTaskDetails(int taskId)
