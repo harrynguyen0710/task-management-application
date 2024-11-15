@@ -1,0 +1,29 @@
+﻿@model IEnumerable<task_management.Models.Tasks>
+
+<table class="min-w-full bg-white rounded-lg overflow-hidden">
+    <thead class="bg-gray-200">
+        <tr>
+            <th class="py-2 px-4 border-b text-left">Activity</th>
+            <th class="py-2 px-4 border-b text-left">Date</th>
+            <th class="py-2 px-4 border-b text-left">Status</th>
+            <th class="py-2 px-4 border-b text-center">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var task in Model)
+        {
+            <tr>
+                <td class="py-2 px-4 border-b">@task.name</td>
+                <td class="py-2 px-4 border-b">@task.startDate.ToString("yyyy-MM-dd")</td>
+                <td class="py-2 px-4 border-b">
+                    <span class="badge @($"badge-{task.status.Replace(" ", "-").ToLower()}")">@task.status</span>
+                </td>
+                <td class="py-2 px-4 border-b text-center">
+                    <i class="fas fa-eye text-blue-500 cursor-pointer" onclick="showTaskDetails(@task.taskId)" title="View Details"></i>
+                </td>
+                @Html.Partial("_UsersDetailTaskPartial", task)
+
+            </tr>
+        }
+    </tbody>
+</table>

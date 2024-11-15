@@ -70,11 +70,10 @@ namespace task_management.Services
         public async Task<UserDetails> GetDetailUser(string userId)
         {
             var jointProjects = await _projectService.GetProjectsByUserId(userId);
-            var jointTasks = await _taskService.GetTasksByUserId(userId);
+
             var detailedUser = new UserDetails
             {
                 Projects = jointProjects,
-                Tasks = jointTasks,
             };
             return detailedUser;
         }

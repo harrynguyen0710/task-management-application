@@ -8,7 +8,7 @@
 # appsetting.json
 
 .env
-
+.json
 # User-specific files
 *.rsuser
 *.suo
