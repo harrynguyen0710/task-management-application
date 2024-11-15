@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using task_management.Data;
 using task_management.Models;
 using task_management.Services;
 using task_management.ViewModels;
@@ -16,9 +18,12 @@ namespace task_management.Controllers
         private readonly UserManager<Users> _userManager;
         private readonly ProjectService _projectService;
         private readonly TaskService _taskService;
+        private readonly ApplicationDbContext _context;
 
         public ProfileController(ILogger<ProfileController> logger, UserService userService,
-            UserManager<Users> userManager, IdentityService identityService, ProjectService projectService, TaskService taskService)
+            UserManager<Users> userManager, IdentityService identityService, ProjectService projectService,
+            TaskService taskService, ApplicationDbContext context)
+
         {
             _logger = logger;
             _userService = userService;
@@ -26,11 +31,22 @@ namespace task_management.Controllers
             _identityService = identityService;
             _projectService = projectService;
             _taskService = taskService;
+            _context = context;
+
         }
 
-        public async Task<IActionResult> Index()
+
+
+        public async Task<IActionResult>Index(string userId)
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = new Users();
+            if(userId == null)
+            {
+                user = await _userManager.GetUserAsync(User);
+            } else
+            {
+                user = await _context.Users.Where(u => u.Id == userId).FirstOrDefaultAsync();
+            }
             var userRoles = await _identityService.GetUserRole(user);
             var detailedUser = await _userService.GetDetailUser(user.Id);
             detailedUser.RoleNames = userRoles;
@@ -74,5 +90,6 @@ namespace task_management.Controllers
 
             return PartialView("_UsersDetailTaskPartial", userDetails);
         }
+
     }
 }
