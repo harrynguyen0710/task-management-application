@@ -79,7 +79,7 @@ namespace task_management.Services
 
         public int GetTotalTasks(int projectId)
         {
-            return  _unitOfWork.TaskRepository.GetTotalTaskInProject(projectId);
+            return _unitOfWork.TaskRepository.GetTotalTaskInProject(projectId);
         }
 
 

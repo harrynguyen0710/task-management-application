@@ -10,7 +10,21 @@
             <span>@Model.name</span>
         </div>
 
-        <!-- Priority and Assignee in the same row, with Assignee shifted left -->
+        <div class="flex">
+            <strong class="mr-2">Project Name:</strong>
+            @if (Model.ProjectAssignment?.Project != null)
+            {
+                <a asp-controller="Project" asp-action="Details" asp-route-id="@Model.ProjectAssignment.Project.projectId"
+                   class="project-link">
+                    @Model.ProjectAssignment.Project.name
+                </a>
+            }
+            else
+            {
+                <span>No Project Assigned</span>
+            }
+        </div>
+
         <div class="flex justify-between">
             <div class="flex items-center">
                 <strong class="mr-2">Priority:</strong>
@@ -26,18 +40,25 @@
                 <span class="px-3 py-1 rounded-full @priorityClass">@Model.priority</span>
             </div>
             <div class="flex items-center ml-6 w-1/2">
-                <strong class="mr-2">Assignee:</strong>
-            
-                @*<span>@Model.ProjectAssignment.User.fullName</span>*@
-            
+                <strong class="mr-2">Start Date:</strong>
+                <span>@Model.startDate.ToString("yyyy-MM-dd")</span>
             </div>
         </div>
 
-        <!-- Start Date and End Date in the same row, with End Date shifted left -->
+        <!-- Status and End Date in the same row -->
         <div class="flex justify-between">
             <div class="flex items-center">
-                <strong class="mr-2">Start Date:</strong>
-                <span>@Model.startDate.ToString("yyyy-MM-dd")</span>
+                <strong class="mr-2">Status:</strong>
+                @{
+                    var statusClass = Model.status switch
+                    {
+                        "Completed" => "bg-green-500 text-white",
+                        "In Progress" => "bg-blue-500 text-white",
+                        "Due" => "bg-red-500 text-white",
+                        _ => "bg-gray-500 text-white"
+                    };
+                }
+                <span class="px-3 py-1 rounded-full @statusClass">@Model.status</span>
             </div>
             <div class="flex items-center ml-6 w-1/2">
                 <strong class="mr-2">End Date:</strong>
@@ -45,20 +66,6 @@
             </div>
         </div>
 
-        <!-- Status with conditional color class -->
-        <div class="flex">
-            <strong class="mr-2">Status:</strong>
-            @{
-                var statusClass = Model.status switch
-                {
-                    "Completed" => "bg-green-500 text-white",
-                    "In Progress" => "bg-blue-500 text-white",
-                    "Due" => "bg-red-500 text-white",
-                    _ => "bg-gray-500 text-white"
-                };
-            }
-            <span class="px-3 py-1 rounded-full @statusClass">@Model.status</span>
-        </div>
 
         <!-- Description -->
         <div class="flex">
@@ -93,5 +100,20 @@
     .bg-gray-500 {
         background-color: #a0aec0;
         color: white;
+    }
+
+    .no-underline {
+        text-decoration: none; 
+    }
+    /* Custom link styling */
+    .project-link {
+        color: #1e90ff;
+        text-decoration: none; 
+        transition: color 0.3s; 
+    }
+
+        /* Hover effect */
+    .project-link:hover {
+        color: #1c3d5a;
     }
 </style>
