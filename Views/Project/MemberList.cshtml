@@ -94,9 +94,13 @@
                     </select>
                 </div>
                 <div id="taskSection, taskModal">
-                    @await Html.PartialAsync("_TasksPartial", Model)
                     @await Html.PartialAsync("_TasksDetailPartial", Model)
                 </div>
+
+                <div id="taskInfoSection">
+                    @await Html.PartialAsync("_TasksPartial", Model)
+                </div>
+
                 <div class="flex justify-start mt-6">
                     <a href="@Url.Action("Index", "Project")" class="bg-blue-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-700 focus:outline-none">
                         <i class="fas fa-arrow-left mr-2"></i> Back to List
@@ -108,12 +112,13 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
+
         function loadTasks(pageNumber, searchTerm = '', status = '', priority = '', assignee = '') {
             $.ajax({
                 url: '@Url.Action("LoadTasks", "Project")',
                 type: 'GET',
                 data: {
-                    projectId: '@Model.Project.projectId',
+                    projectId: '@ViewBag.ProjectId',
                     pageNumber: pageNumber,
                     searchTerm: searchTerm,
                     status: status,

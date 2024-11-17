@@ -29,12 +29,12 @@ namespace task_management.Data
                 .HasForeignKey(p => p.organizationId);
 
             builder.Entity<Tasks>()
-                .HasOne(t => t.User)
+                .HasOne(t => t.ProjectAssignment)
                 .WithMany(u => u.Tasks)
-                .HasForeignKey(t => t.userId);
+                .HasForeignKey(t => new { t.projectId, t.userId });
 
             builder.Entity<ProjectAssignment>()
-                .HasKey(pa => new { pa.projectId, pa.userId });
+                .HasKey(pa => new { pa.projectId, pa.userId, });
 
             builder.Entity<ProjectAssignment>()
                 .HasOne(pa => pa.Project)

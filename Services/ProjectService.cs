@@ -38,26 +38,19 @@ namespace task_management.Services
         public async Task<Project> GetProjectByIdAsync(int id)
         {
             var projects = await _unitOfWork.Repository<Project>().GetByIdAsync(id);
-            await _unitOfWork.CompleteAsync();
             return projects;
 
         }
 
         public async Task<Project> GetDetailedProject(int projectId)
         {
-            var teamMembers = _unitOfWork.ProjectAssignmentRepository.GetTeamMembersByProject(projectId);
-            var staffRoles = await _identityService.GetUsersWithRoles(teamMembers);
             var project = await _unitOfWork.ProjectRepository.GetDetailedProject(projectId);
             return project;
         }
 
         public async Task<IEnumerable<Project>> GetProjectsByUserId(string userId)
         {
-            var projectIdList = _unitOfWork.ProjectAssignmentRepository.GetProjectsByUserId(userId);
-
-            var projects = await Task.WhenAll(projectIdList
-                .Select(async project => await _unitOfWork.Repository<Project>().GetByIdAsync(project.projectId)));
-            await _unitOfWork.CompleteAsync();
+            var projects = await _unitOfWork.ProjectRepository.GetProjectByUserId(userId);
             return projects;
         }
 

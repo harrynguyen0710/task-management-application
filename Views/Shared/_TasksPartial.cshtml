@@ -40,14 +40,17 @@
                 <div>
                     <span class="inline-block px-3 py-1 rounded @priorityClass">@task.priority</span>
                 </div>
-                <div>@task.User.fullName</div>
+                
+                <div>@task.ProjectAssignment.User.fullName</div>
+                
+                
                 <div>
                     <button class="text-blue-600 hover:text-blue-900"
                             onclick="openModal('@task.name',
                                '@task.startDate.ToString("dd/MM/yyyy")',
                                '@task.status',
-                               '@task.priority',
-                               '@task.User.fullName',
+                                '@task.priority',
+                                '@task.ProjectAssignment.User.fullName',
                                '@task.dueDate.ToString("dd/MM/yyyy")',
                                '@task.description')">
                         <i class="fas fa-edit"></i>

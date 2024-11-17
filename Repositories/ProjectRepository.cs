@@ -15,8 +15,18 @@ namespace task_management.Repositories
         {
             return await _context.Projects
                 .Where(pr => pr.projectId == id)
-                .Include(p => p.ProjectAssignments).ThenInclude(u => u.User).FirstOrDefaultAsync();
+                .Include(p => p.ProjectAssignments)
+                .ThenInclude(u => u.User)
+                .FirstOrDefaultAsync();
 
+        }
+
+        public async Task<List<Project>> GetProjectByUserId(string userId)
+        {
+            var projects = await _context.ProjectAssignments
+                .Select(p => p.Project)
+                .ToListAsync();
+            return projects;
         }
 
         public void InActive(Project project)

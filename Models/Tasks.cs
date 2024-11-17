@@ -30,9 +30,12 @@ namespace task_management.Models
         public string status { get; set; }
         public bool isActive { get; set; }
 
-        [ForeignKey("User")]
+        [ForeignKey("ProjectAssignments")]
+        public int projectId { get; set; }
         public string userId { get; set; }
-        public Users User { get ; set; }
+        public virtual ProjectAssignment ProjectAssignment { get; set; }    
+
+
        
     }
 }

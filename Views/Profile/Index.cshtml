@@ -158,15 +158,13 @@
                 $('#taskSection').html(data);
             },
             error: function () {
+                console.log(error);
                 alert("Failed to load tasks.");
             }
         });
     }
     function showTaskDetails(taskId) {
-        console.log('This is task id::', taskId);
-        console.log('Nguyen Ngoc Hoang');
         const taskContent = document.getElementById(`taskDetail-${taskId}`).innerHTML;
-        console.log('task content::', taskContent);
         document.getElementById("taskModalContent").innerHTML = taskContent;
         document.getElementById("taskModal").classList.remove("hidden"); // Show pop-up
     }

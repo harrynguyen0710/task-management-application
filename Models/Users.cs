@@ -17,7 +17,6 @@ namespace task_management.Models
         [ForeignKey("Organization")]
         public int organizationId { get; set; }
         public Organization Organization { get; set; }
-        public ICollection<Tasks> Tasks { get; set; }
         public ICollection<ProjectAssignment> ProjectAssignments { get; set; }
 
         [Required(ErrorMessage = "Please upload an user avatar")]

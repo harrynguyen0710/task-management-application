@@ -12,16 +12,18 @@ namespace task_management.Repositories
         {
         }
 
-        public List<ProjectAssignment> GetProjectsByUserId(string userId)
+        public List<Project> GetProjectsByUserId(string userId)
         {
             return _context.ProjectAssignments
                 .Where(u => u.userId == userId)
+                .Select(p => p.Project)
                 .ToList();
         }
-        public List<ProjectAssignment> GetTeamMembersByProject(int projectId)
+        public List<Users> GetTeamMembersByProject(int projectId)
         {
             return _context.ProjectAssignments
                 .Where(p => p.projectId == projectId)
+                .Select(u => u.User)
                 .ToList();
         }
         public async Task<ProjectAssignment> FindAsync(Expression<Func<ProjectAssignment, bool>> predicate)

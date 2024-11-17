@@ -24,6 +24,7 @@ namespace task_management.Controllers
         public async Task<IActionResult> AddTask(int projectId)
         {
             var availableUsers = await _userService.GetUsersByProjectId(projectId);
+
             ViewBag.AvailableUsers = new SelectList(availableUsers, "Id", "fullName");
             var taskDetails = new TaskDetails
             {
@@ -36,6 +37,7 @@ namespace task_management.Controllers
         [HttpPost]
         public async Task<IActionResult> AddTask(TaskDetails taskDetails)
         {
+            taskDetails.Tasks.projectId = taskDetails.projectId;
             await _taskService.AddTaskAsync(taskDetails.Tasks);
             TempData["AddTaskMessage"] = "Task added successfully!";
             return RedirectToAction("Details", "Project", new { id = taskDetails.projectId });

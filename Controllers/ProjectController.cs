@@ -81,7 +81,7 @@ namespace task_management.Controllers
             var totalTasks = _taskService.GetTotalTasks(id);
 
             // Fetch the paginated tasks
-            var jointTasks = await _taskService.GetTasksInProjects(teamMembers, pageNumber, pageSize);
+            var jointTasks = await _taskService.GetTasksInProjects(id, pageNumber, pageSize);
 
             var selectedTask = jointTasks.FirstOrDefault(t => t.taskId == selectedTaskId);
 
@@ -108,48 +108,21 @@ namespace task_management.Controllers
             var teamMembers = _unitOfWork.ProjectAssignmentRepository.GetTeamMembersByProject(projectId);
 
             // Retrieve all tasks associated with the team members in the project
-            var allTasks = await _taskService.GetTasksInProjects(teamMembers, 1, int.MaxValue);
+            var allTasks = await _taskService.GetTasksInProjects(projectId, pageNumber, pageSize, status, priority, assignee);
 
             // Filter tasks by search term
             var filteredTasks = string.IsNullOrEmpty(searchTerm)
-                ? allTasks.ToList()
-                : allTasks.Where(t => t.name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
-
-
-            // Apply additional filters if provided
-            if (!string.IsNullOrEmpty(status))
-            {
-                filteredTasks = filteredTasks.Where(t => t.status.Equals(status, StringComparison.OrdinalIgnoreCase)).ToList();
-            }
-
-            if (!string.IsNullOrEmpty(priority))
-            {
-                filteredTasks = filteredTasks.Where(t => t.priority.Equals(priority, StringComparison.OrdinalIgnoreCase)).ToList();
-            }
-
-            if (!string.IsNullOrEmpty(assignee))
-            {
-                filteredTasks = filteredTasks.Where(t => t.userId == assignee).ToList(); 
-            }
-
-            // Count of filtered tasks
-            var filteredTasksCount = filteredTasks.Count;
-
-            // Paginate the filtered tasks
-            var paginatedTasks = filteredTasks
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
+                ? allTasks
+                : await _taskService.SearchTaskByName(searchTerm);
 
             // Prepare the ProjectDetails view model
             var detailProject = new ProjectDetails
             {
                 Project = await _projectService.GetDetailedProject(projectId),
                 UserRole = (List<UserRoles>)(await _identityService.GetUsersWithRoles(teamMembers)),
-                Tasks = paginatedTasks,
+                Tasks = filteredTasks,
                 PageNumber = pageNumber,
                 PageSize = pageSize,
-                TotalTasks = filteredTasksCount
             };
 
             // Return the partial view with the task details
@@ -170,75 +143,27 @@ namespace task_management.Controllers
             string assignee = ""
         )
         {
-
-            var project = await _projectService.GetDetailedProject(projectId);
-            if (project == null)
-            {
-                return NotFound();
-            }
-
-            // Fetch team members and their additional details
             var teamMembers = _unitOfWork.ProjectAssignmentRepository.GetTeamMembersByProject(projectId);
-            var staffRoles = (List<UserRoles>)(await _identityService.GetUsersWithRoles(teamMembers));
+            
+            ViewBag.ProjectId = projectId;
 
-            var detailedMembers = new List<UserMembers>();
-            foreach (var member in teamMembers)
-            {
-                var user = await _userService.GetUserById(member.userId);
-                if (user != null)
-                {
-                    detailedMembers.Add(new UserMembers
-                    {
-                        Id = user.Id,
-                        FullName = user.FullName,
-                        ImageUrl = user.ImageUrl,
-                        Roles = user.Roles
-                    });
-                }
-            }
+            ViewBag.Staff = new SelectList(teamMembers, "Id", "fullName");
 
-            // Retrieve all tasks associated with the team members in the project
-            var allTasks = await _taskService.GetTasksInProjects(teamMembers, 1, int.MaxValue);
+           
+            //// Fetch the paginated tasks
+            var jointTasks = await _taskService.GetTasksInProjects(projectId, pageNumber, pageSize);
 
-            // Filter tasks by search term
-            var filteredTasks = string.IsNullOrEmpty(searchTerm)
-                ? allTasks.ToList()
-                : allTasks.Where(t => t.name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
 
-            // Apply additional filters if provided
-            if (!string.IsNullOrEmpty(status))
-            {
-                filteredTasks = filteredTasks.Where(t => t.status.Equals(status, StringComparison.OrdinalIgnoreCase)).ToList();
-            }
+          
 
-            if (!string.IsNullOrEmpty(priority))
-            {
-                filteredTasks = filteredTasks.Where(t => t.priority.Equals(priority, StringComparison.OrdinalIgnoreCase)).ToList();
-            }
-
-            if (!string.IsNullOrEmpty(assignee))
-            {
-                filteredTasks = filteredTasks.Where(t => t.userId == assignee).ToList(); // Adjust based on your model
-            }
-
-            // Count of filtered tasks
-            var filteredTasksCount = filteredTasks.Count;
-
-            // Paginate the filtered tasks
-            var paginatedTasks = filteredTasks
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
-
-            // Prepare the ProjectDetails view model with filtered and paginated tasks
+            // Prepare the ProjectDetails view model
             var detailProject = new ProjectDetails
             {
-                Project = project,
-                UserRole = staffRoles,
-                Tasks = paginatedTasks,
+                UserRole = (List<UserRoles>)(await _identityService.GetUsersWithRoles(teamMembers)),
                 PageNumber = pageNumber,
                 PageSize = pageSize,
-                TotalTasks = filteredTasksCount,
+                Tasks = jointTasks,
+
             };
 
             return View("MemberList", detailProject);
@@ -253,27 +178,11 @@ namespace task_management.Controllers
                 // Thêm người dùng vào dự án
                 await _projectService.AddUserToProject(projectId, userId);
 
+
                 // Lấy thông tin người dùng và vai trò sử dụng GetUsersWithRoles
-                var projectAssignment = new List<ProjectAssignment> { new ProjectAssignment { userId = userId } };
-                var usersWithRoles = await _identityService.GetUsersWithRoles(projectAssignment);
+                var usersWithRoles = await _userService.GetUserById(userId);   
 
-                // Kiểm tra xem người dùng có tồn tại không
-                var addedUser = usersWithRoles.FirstOrDefault();
-                if (addedUser == null)
-                {
-                    return Json(new { success = false, message = "User not found." });
-                }
-
-                // Chuẩn bị JSON trả về
-                var userInfo = new
-                {
-                    id = addedUser.Id,
-                    FullName = addedUser.fullName,
-                    roles = addedUser.Roles.FirstOrDefault(), // Lấy vai trò đầu tiên nếu có nhiều vai trò
-                    imageUrl = addedUser.ImageUrl
-                };
-
-                return Json(new { success = true, message = "User added to the project successfully!", user = userInfo });
+                return Json(new { success = true, message = "User added to the project successfully!", user = usersWithRoles });
             }
             catch (Exception ex)
             {

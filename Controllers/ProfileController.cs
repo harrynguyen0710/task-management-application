@@ -75,42 +75,42 @@ namespace task_management.Controllers
 
 
 
-        [HttpGet("Profile/GetTaskDetails/{taskId}")]
-        public async Task<IActionResult> GetTaskDetails(int taskId)
-        {
-            var task = await _userService.GetTaskById(taskId);
-            if (task == null)
-            {
-                return NotFound();
-            }
+        //[HttpGet("Profile/GetTaskDetails/{taskId}")]
+        //public async Task<IActionResult> GetTaskDetails(int taskId)
+        //{
+        //    var task = await _userService.GetTaskById(taskId);
+        //    if (task == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var userProjects = await _projectService.GetProjectsByUserId(task.userId);
+        //    var userProjects = await _projectService.GetProjectsByUserId(task.userId);
 
-            Project project = null;
-            foreach (var userProject in userProjects)
-            {
-                var tasksInProject = await _taskService.GetTasksByProjectId(userProject.projectId);
-                if (tasksInProject.Any(t => t.taskId == taskId))
-                {
-                    project = userProject;
-                    break;
-                }
-            }
+        //    Project project = null;
+        //    foreach (var userProject in userProjects)
+        //    {
+        //        var tasksInProject = await _taskService.GetTasksByProjectId(userProject.projectId);
+        //        if (tasksInProject.Any(t => t.taskId == taskId))
+        //        {
+        //            project = userProject;
+        //            break;
+        //        }
+        //    }
 
-            if (project == null)
-            {
-                return NotFound();
-            }
+        //    if (project == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var userDetails = new UserDetails
-            {
-                Task = task,
-                Project = project,
-                User = task.User
-            };
+        //    var userDetails = new UserDetails
+        //    {
+        //        Task = task,
+        //        Project = project,
+        //        User = task.User
+        //    };
 
-            return PartialView("_UsersDetailTaskPartial", userDetails);
-        }
+        //    return PartialView("_UsersDetailTaskPartial", userDetails);
+        //}
 
     }
 }
