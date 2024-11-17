@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using task_management.Data;
 using task_management.Models;
 using task_management.Services;
-using task_management.ViewModels;
 
 namespace task_management.Controllers
 {
@@ -71,46 +70,18 @@ namespace task_management.Controllers
         }
 
 
+        public async Task<IActionResult> GetTaskDetails(int taskId)
+        {
+            var task = await _taskService.GetTaskByIdAsync(taskId);
 
+            if (task == null)
+            {
+                return NotFound();
+            }
 
+            return PartialView("_UsersDetailTaskPartial", task);
+        }
 
-
-        //[HttpGet("Profile/GetTaskDetails/{taskId}")]
-        //public async Task<IActionResult> GetTaskDetails(int taskId)
-        //{
-        //    var task = await _userService.GetTaskById(taskId);
-        //    if (task == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var userProjects = await _projectService.GetProjectsByUserId(task.userId);
-
-        //    Project project = null;
-        //    foreach (var userProject in userProjects)
-        //    {
-        //        var tasksInProject = await _taskService.GetTasksByProjectId(userProject.projectId);
-        //        if (tasksInProject.Any(t => t.taskId == taskId))
-        //        {
-        //            project = userProject;
-        //            break;
-        //        }
-        //    }
-
-        //    if (project == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var userDetails = new UserDetails
-        //    {
-        //        Task = task,
-        //        Project = project,
-        //        User = task.User
-        //    };
-
-        //    return PartialView("_UsersDetailTaskPartial", userDetails);
-        //}
 
     }
 }

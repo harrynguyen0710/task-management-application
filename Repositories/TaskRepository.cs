@@ -15,10 +15,9 @@ namespace task_management.Repositories
         {
             return await _context.Tasks
                 .Include(u => u.ProjectAssignment)
-                .Where(t => t.taskId == id).FirstOrDefaultAsync();
+                .ThenInclude(pa => pa.Project)
+                .FirstOrDefaultAsync(t => t.taskId == id);
         }
-
-
 
         public async Task<IEnumerable<Tasks>> GetTasksByProjectId(
             int projectId,
@@ -29,9 +28,9 @@ namespace task_management.Repositories
             string? assignee = null)
         {
             var query = _context.Tasks
-                    .Include(u => u.ProjectAssignment)
-                    .ThenInclude(us => us.User)
-                    .Where(t => t.projectId == projectId);
+            .Include(u => u.ProjectAssignment)
+            .ThenInclude(pa => pa.Project)
+            .Where(t => t.projectId == projectId);
 
             if (!string.IsNullOrEmpty(status))
                 query = query.Where(t => t.status.Equals(status));
@@ -51,6 +50,8 @@ namespace task_management.Repositories
         public List<Tasks> GetTasksByUserId(string userId)
         {
             return _context.Tasks
+                .Include(u => u.ProjectAssignment)
+                .ThenInclude(pa => pa.Project)
                 .Where(u => u.userId == userId)
                 .OrderByDescending(t => t.startDate)
                 .ToList();
@@ -64,7 +65,7 @@ namespace task_management.Repositories
 
         public int GetTotalTaskInProject(int projectId)
         {
-            return  _context.Tasks
+            return _context.Tasks
                 .Count(t => t.projectId == projectId);
         }
 
@@ -85,13 +86,14 @@ namespace task_management.Repositories
         public async Task<List<Tasks>> GetTasksByUserId(string userId, int pageNumber = 1, int pageSize = 6)
         {
             return await _context.Tasks
+                .Include(u => u.ProjectAssignment)
+                .ThenInclude(pa => pa.Project)
                 .Where(u => u.userId == userId)
                 .OrderByDescending(t => t.startDate)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
         }
-
 
     }
 }
