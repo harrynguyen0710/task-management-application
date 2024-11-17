@@ -36,6 +36,7 @@ namespace task_management.Services
         /// </summary>
         /// <param name="userId"></param>
         /// <returns>A list of tasks</returns>
+
         public async Task<IEnumerable<Tasks>> GetTasksByUserId(string userId, int pageNumber = 1, int pageSize = 6)
         {
             var tasks = await _unitOfWork.TaskRepository.GetTasksByUserId(userId, pageNumber, pageSize);
@@ -57,44 +58,28 @@ namespace task_management.Services
 
 
         /// <summary>
-        /// Get all tasks of a project, joint by staff id (staff joint project) with pagination
+        /// Get all tasks of a project with pagination
         /// </summary>
-        /// <param name="assignments"></param>
+        /// <param name="projectId"></param>
         /// <param name="pageNumber">The page number to fetch</param>
         /// <param name="pageSize">The number of tasks per page</param>
         /// <returns>A paginated list of tasks</returns>
-        public async Task<IEnumerable<Tasks>> GetTasksInProjects(List<ProjectAssignment> assignments, int pageNumber, int pageSize)
+
+        public async Task<IEnumerable<Tasks>> GetTasksInProjects(int projectId, int pageNumber, int pageSize, string? status = null, string? priority = null, string? assignee = null)
         {
-            var listOfTasks = new HashSet<Tasks>();
+            var listOfTasks = await _unitOfWork.TaskRepository.GetTasksByProjectId(projectId, pageNumber, pageSize, status, priority, assignee);
+            return listOfTasks;
+        }
 
-            // Collect tasks for each user sequentially to avoid DbContext concurrency issues
-            foreach (var assignment in assignments)
-            {
-                var userTasks = await GetTasksByUserId(assignment.userId);
-                listOfTasks.UnionWith(userTasks);
-            }
-
-            // Apply pagination
-            var paginatedTasks = listOfTasks
-                                    .Skip((pageNumber - 1) * pageSize)
-                                    .Take(pageSize)
-                                    .ToList();
-
-            await _unitOfWork.CompleteAsync();
-            return paginatedTasks;
+        public async Task<List<Tasks>> SearchTaskByName(string taskName)
+        {
+            var tasks = await _unitOfWork.TaskRepository.SearchTasksByName(taskName);
+            return tasks;
         }
 
         public int GetTotalTasks(int projectId)
         {
-            var assignments = _unitOfWork.ProjectAssignmentRepository.GetTeamMembersByProject(projectId);
-            var count = 0;
-
-            foreach (var assignment in assignments)
-            {
-                count += _unitOfWork.TaskRepository.GetTotalTask(assignment.userId);
-            }
-
-            return count;
+            return  _unitOfWork.TaskRepository.GetTotalTaskInProject(projectId);
         }
 
 
@@ -108,20 +93,7 @@ namespace task_management.Services
         {
             return await _unitOfWork.TaskRepository.GetTaskById(id);
         }
-        public async Task<IEnumerable<Tasks>> GetTasksByProjectId(int projectId)
-        {
-            var assignments = _unitOfWork.ProjectAssignmentRepository.GetTeamMembersByProject(projectId);
 
-            var tasksInProject = new List<Tasks>();
-
-            foreach (var assignment in assignments)
-            {
-                var userTasks = await GetTasksByUserId(assignment.userId);
-                tasksInProject.AddRange(userTasks);
-            }
-
-            return tasksInProject;
-        }
 
     }
 }

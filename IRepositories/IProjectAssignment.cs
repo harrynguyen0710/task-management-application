@@ -5,8 +5,8 @@ namespace task_management.IRepositories
 {
     public interface IProjectAssignment : IRepository<ProjectAssignment>
     {
-        public List<ProjectAssignment> GetTeamMembersByProject(int id);
-        public List<ProjectAssignment> GetProjectsByUserId(string userId);
+        public List<Users> GetTeamMembersByProject(int id);
+        public List<Project> GetProjectsByUserId(string userId);
         Task<ProjectAssignment> FindAsync(Expression<Func<ProjectAssignment, bool>> predicate);
 
     }

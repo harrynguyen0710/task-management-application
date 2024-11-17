@@ -49,6 +49,8 @@ namespace task_management.Services
                 }
             }
 
+
+
         }
 
         public async Task<bool> Login(string email, string password)
@@ -67,34 +69,33 @@ namespace task_management.Services
             await _signInManager.SignOutAsync();
         }
 
-        public async Task<IEnumerable<UserRoles>> GetUsersWithRoles(List<ProjectAssignment> jointUsers)
+        public async Task<IEnumerable<string>> GetUserRole(Users user)
+        {
+            var userRoles = await _userManager.GetRolesAsync(user);
+            return userRoles;
+        }
+
+
+        public async Task<IEnumerable<UserRoles>> GetUsersWithRoles(List<Users> jointUsers)
         {
             var usersWithRoles = new List<UserRoles>();
 
             foreach (var user in jointUsers)
-            {
-                var staff = await _userManager.FindByIdAsync(user.userId);
-                if (staff != null)
+            { 
+                var roles = await _userManager.GetRolesAsync(user);
+                usersWithRoles.Add(new UserRoles
                 {
-                    var roles = await _userManager.GetRolesAsync(staff);
-                    usersWithRoles.Add(new UserRoles
-                    {
-                        Id = staff.Id,
-                        fullName = staff.fullName,
-                        Email = staff.Email,
-                        Roles = roles.ToList(), // Convert to List<string>
-                        ImageUrl = staff.PhotoUrl
-                    });
-                }
+                    Id = user.Id,
+                    fullName = user.fullName,
+                    Email = user.Email,
+                    Roles = roles.ToList(),
+                    ImageUrl = user.PhotoUrl
+                });   
             }
             return usersWithRoles;
         }
 
-        public async Task<IEnumerable<string>> GetUserRole(Users user)
-        {
-            var roleName = await _userManager.GetRolesAsync(user);
-            return roleName;
-        }
+      
 
 
         public async Task SendPasswordResetLink(string email)

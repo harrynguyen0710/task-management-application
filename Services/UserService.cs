@@ -39,16 +39,7 @@ namespace task_management.Services
 
         public async Task<IEnumerable<Users>> GetUsersByProjectId(int projectId)
         {
-            var projectAssignments = _unitOfWork.ProjectAssignmentRepository.GetTeamMembersByProject(projectId);
-
-            var teamMembers = projectAssignments
-                .Select(assignment => _userManager.FindByIdAsync(assignment.userId).Result)
-                .Where(user => user != null)
-                .ToList();
-
-
-            await _unitOfWork.CompleteAsync();
-
+            var teamMembers = _unitOfWork.ProjectAssignmentRepository.GetTeamMembersByProject(projectId);
             return teamMembers;
         }
 
