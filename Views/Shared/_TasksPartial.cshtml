@@ -15,7 +15,7 @@
 
         @foreach (var task in Model.Tasks)
         {
-            <div class="w-full grid grid-cols-6 gap-4 items-center text-center py-2 border-b">
+            <div class="w-full grid grid-cols-6 gap-4 items-center text-center py-2 border-b" data-task-id="@task.taskId">
                 <div class="text-gray-700">@task.name</div>
                 <div class="text-gray-700">@task.startDate.ToString("dd/MM/yyyy")</div>
                 @{
@@ -40,26 +40,25 @@
                 <div>
                     <span class="inline-block px-3 py-1 rounded @priorityClass">@task.priority</span>
                 </div>
-                
                 <div>@task.ProjectAssignment.User.fullName</div>
-                
-                
                 <div>
                     <button class="text-blue-600 hover:text-blue-900"
                             onclick="openModal('@task.name',
-                               '@task.startDate.ToString("dd/MM/yyyy")',
-                               '@task.status',
-                                '@task.priority',
-                                '@task.ProjectAssignment.User.fullName',
-                               '@task.dueDate.ToString("dd/MM/yyyy")',
-                               '@task.description')">
+                        '@task.startDate.ToString("dd/MM/yyyy")',
+                        '@task.status',
+                        '@task.priority',
+                        '@task.ProjectAssignment.User.fullName',
+                        '@task.dueDate.ToString("dd/MM/yyyy")',
+                        '@task.description')">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <a asp-controller="Task" asp-action="Delete" asp-route-id="@task.taskId" class="text-red-500"><i class="fas fa-trash-alt"></i></a>
+                    <a href="#" onclick="removeTask(@task.projectId, @task.taskId)" class="text-red-500">
+                        <i class="fas fa-trash-alt"></i>
+                    </a>
                 </div>
-
             </div>
         }
+
 
         <!-- Pagination -->
         <div class="flex justify-center mt-4">
@@ -80,3 +79,56 @@
         <div class="text-center py-4 text-gray-500">No tasks found.</div>
     }
 </div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    async function removeTask(projectId, taskId) {
+        const confirmResult = await Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you want to delete this task? This action cannot be undone.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        });
+
+        if (confirmResult.isConfirmed) {
+            try {
+                const response = await fetch(`/Task/Remove?projectId=${projectId}&taskId=${taskId}`, {
+                    method: 'PUT'
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success) {
+                        // Remove the task row from the DOM
+                        const taskRow = document.querySelector(`[data-task-id="${taskId}"]`);
+                        if (taskRow) {
+                            taskRow.remove();
+                        }
+
+                        await Swal.fire({
+                            title: 'Deleted!',
+                            text: 'Your task has been deleted.',
+                            icon: 'success',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                    } else {
+                        Swal.fire('Error', result.message || "Failed to delete the task.", 'error');
+                    }
+                } else {
+                    Swal.fire('Error', "Something went wrong while deleting the task.", 'error');
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                Swal.fire('Error', "An unexpected error occurred.", 'error');
+            }
+        }
+    }
+
+
+</script>
+

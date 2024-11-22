@@ -28,7 +28,7 @@ namespace task_management.Models
         [Required(ErrorMessage = "Please select status mode")]
         [Display(Name = "Status")]
         public string status { get; set; }
-        public bool isActive { get; set; }
+        public bool isActive { get; set; } = true;
 
         [ForeignKey("ProjectAssignments")]
         public int projectId { get; set; }
