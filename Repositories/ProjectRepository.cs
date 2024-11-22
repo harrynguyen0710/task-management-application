@@ -11,10 +11,17 @@ namespace task_management.Repositories
         {
         }
 
+        public async Task<List<Project>> GetAllAsync()
+        {
+            return await _context.Projects
+                .Where(p => p.isActive == true)
+                .ToListAsync();
+        }
+
         public async Task<Project> GetDetailedProject(int id)
         {
             return await _context.Projects
-                .Where(pr => pr.projectId == id)
+                .Where(pr => pr.projectId == id && pr.isActive)
                 .Include(p => p.ProjectAssignments)
                 .ThenInclude(u => u.User)
                 .FirstOrDefaultAsync();
@@ -24,6 +31,7 @@ namespace task_management.Repositories
         public async Task<List<Project>> GetProjectByUserId(string userId)
         {
             var projects = await _context.ProjectAssignments
+                .Where(p => p.Project.isActive == true)
                 .Select(p => p.Project)
                 .ToListAsync();
             return projects;

@@ -226,5 +226,19 @@ namespace task_management.Controllers
             return RedirectToAction("Details", new { id = project.projectId });
         }
 
+        [HttpPut]
+        public async Task<IActionResult> Remove(int projectId)
+        {
+            var project = await _projectService.GetProjectByIdAsync(projectId);
+            if (project == null)
+            {
+                return Json(new { success = false, message = "Project not found" });
+            }
+
+            await _projectService.InActiveProjectAsync(project);
+
+            return Json(new { success = true, message = "Project deleted successfully" });
+        }
+
     }
 }
