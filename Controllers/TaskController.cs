@@ -52,24 +52,34 @@ namespace task_management.Controllers
         }
 
 
-        /* public async Task<IActionResult> UpdateTask(int projectId)
-         {
-             var availableUsers = await _userService.GetUsersByProjectId(projectId);
-             ViewBag.AvailableUsers = new SelectList(availableUsers, "Id", "UserName");
-             var taskDetails = new TaskDetails
-             {
-                 projectId = projectId,
-             };
+        //public async Task<IActionResult> UpdateTask(int projectId)
+        //{
+        //    var availableUsers = await _userService.GetUsersByProjectId(projectId);
+        //    ViewBag.AvailableUsers = new SelectList(availableUsers, "Id", "UserName");
+        //    var taskDetails = new TaskDetails
+        //    {
+        //        projectId = projectId,
+        //    };
 
-             return View(taskDetails);
-         }
+        //    return View(taskDetails);
+        //}
 
 
-         [HttpPost]
-         public async Task<IActionResult> UpdateTask()
-         {
-             return RedirectToAction("Details", "Project", new { id = taskDetails.projectId });
-         }*/
+        [HttpPut]
+        public async Task<IActionResult> Remove(int projectId, int taskId)
+        {
+            Console.WriteLine("Nguyen Ngoc Hoang");
+
+            var task = await _taskService.GetTaskByIdAsync(taskId);
+            if (task == null)
+            {
+                return Json(new { success = false, message = "Task not found" });
+            }
+
+            await _taskService.InActiveTaskAsync(task);
+
+            return Json(new { success = true, message = "Task deleted successfully" });
+        }
 
     }
 }

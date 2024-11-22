@@ -181,7 +181,7 @@ namespace task_management.Migrations
 
                     b.HasKey("organizationId");
 
-                    b.ToTable("Organizations");
+                    b.ToTable("Organizations", (string)null);
                 });
 
             modelBuilder.Entity("task_management.Models.Project", b =>
@@ -221,7 +221,7 @@ namespace task_management.Migrations
 
                     b.HasIndex("organizationId");
 
-                    b.ToTable("Projects");
+                    b.ToTable("Projects", (string)null);
                 });
 
             modelBuilder.Entity("task_management.Models.ProjectAssignment", b =>
@@ -236,7 +236,7 @@ namespace task_management.Migrations
 
                     b.HasIndex("userId");
 
-                    b.ToTable("ProjectAssignments");
+                    b.ToTable("ProjectAssignments", (string)null);
                 });
 
             modelBuilder.Entity("task_management.Models.Tasks", b =>
@@ -283,7 +283,7 @@ namespace task_management.Migrations
 
                     b.HasIndex("projectId", "userId");
 
-                    b.ToTable("Tasks");
+                    b.ToTable("Tasks", (string)null);
                 });
 
             modelBuilder.Entity("task_management.Models.Users", b =>

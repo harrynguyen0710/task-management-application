@@ -31,7 +31,7 @@ namespace task_management.Repositories
             var query = _context.Tasks
                     .Include(u => u.ProjectAssignment)
                     .ThenInclude(us => us.User)
-                    .Where(t => t.projectId == projectId);
+                    .Where(t => t.projectId == projectId && t.isActive);
 
             if (!string.IsNullOrEmpty(status))
                 query = query.Where(t => t.status.Equals(status));
@@ -51,7 +51,7 @@ namespace task_management.Repositories
         public List<Tasks> GetTasksByUserId(string userId)
         {
             return _context.Tasks
-                .Where(u => u.userId == userId)
+                .Where(u => u.userId == userId && u.isActive)
                 .OrderByDescending(t => t.startDate)
                 .ToList();
         }
@@ -59,12 +59,14 @@ namespace task_management.Repositories
         public async Task<double> GetTotalUserTask(string userId)
         {
             return await _context.Tasks
+                    .Where(t => t.isActive)
                     .CountAsync(t => t.userId == userId);
         }
 
         public int GetTotalTaskInProject(int projectId)
         {
             return  _context.Tasks
+                .Where(t => t.isActive)
                 .Count(t => t.projectId == projectId);
         }
 
@@ -72,7 +74,7 @@ namespace task_management.Repositories
         public async Task<List<Tasks>> SearchTasksByName(string taskName)
         {
             return await _context.Tasks
-                .Where(t => t.name.Contains(taskName))
+                .Where(t => t.name.Contains(taskName) && t.isActive)
                 .ToListAsync();
         }
 
@@ -85,7 +87,7 @@ namespace task_management.Repositories
         public async Task<List<Tasks>> GetTasksByUserId(string userId, int pageNumber = 1, int pageSize = 6)
         {
             return await _context.Tasks
-                .Where(u => u.userId == userId)
+                .Where(u => u.userId == userId && u.isActive)
                 .OrderByDescending(t => t.startDate)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
