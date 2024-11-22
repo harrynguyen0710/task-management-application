@@ -14,9 +14,9 @@ namespace task_management.Services
             _identityService = identityService; 
         }
 
-        public async Task<IEnumerable<Project>> GetAllProjectsAsync()
+        public async Task<List<Project>> GetAllProjectsAsync()
         {
-            var projects = await _unitOfWork.Repository<Project>().GetAllAsync();
+            var projects = await  _unitOfWork.ProjectRepository.GetAllAsync();
             return projects;
         }
 

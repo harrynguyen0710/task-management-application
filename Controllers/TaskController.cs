@@ -68,8 +68,6 @@ namespace task_management.Controllers
         [HttpPut]
         public async Task<IActionResult> Remove(int projectId, int taskId)
         {
-            Console.WriteLine("Nguyen Ngoc Hoang");
-
             var task = await _taskService.GetTaskByIdAsync(taskId);
             if (task == null)
             {
