@@ -15,10 +15,9 @@ namespace task_management.Repositories
         {
             return await _context.Tasks
                 .Include(u => u.ProjectAssignment)
-                .Where(t => t.taskId == id).FirstOrDefaultAsync();
+                .ThenInclude(pa => pa.Project)
+                .FirstOrDefaultAsync(t => t.taskId == id);
         }
-
-
 
         public async Task<IEnumerable<Tasks>> GetTasksByProjectId(
             int projectId,
@@ -52,6 +51,8 @@ namespace task_management.Repositories
         {
             return _context.Tasks
                 .Where(u => u.userId == userId && u.isActive)
+                .Include(u => u.ProjectAssignment)
+                .ThenInclude(pa => pa.Project)
                 .OrderByDescending(t => t.startDate)
                 .ToList();
         }
@@ -88,12 +89,13 @@ namespace task_management.Repositories
         {
             return await _context.Tasks
                 .Where(u => u.userId == userId && u.isActive)
+                .Include(u => u.ProjectAssignment)
+                .ThenInclude(pa => pa.Project)
                 .OrderByDescending(t => t.startDate)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
         }
-
 
     }
 }
