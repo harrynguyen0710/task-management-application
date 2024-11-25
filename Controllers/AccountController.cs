@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using task_management.Models;
 using task_management.Services;
@@ -41,7 +40,7 @@ namespace task_management.Controllers
             if (user == null)
             {
                 ModelState.AddModelError(string.Empty, "Invalid email.");
-                return View();
+                return PartialView("_Popup", "Invalid email."); // Hoặc xử lý lỗi khác nếu cần
             }
 
             // Create password reset token
@@ -51,11 +50,13 @@ namespace task_management.Controllers
             var resetLink = Url.Action("RenewPassword", "Account", new { userId = user.Id, Token = token }, Request.Scheme);
 
             // Send email with password reset link
-            await _emailService.SendEmailAsync(email, "Reset Password", $"Please click on the following link to reset your password.: <a href='{resetLink}'>Reset Password</a>. If you did not request a password change, please ignore this email.");
+            await _emailService.SendEmailAsync(email, "Reset Password",
+                $"Please click on the following link to reset your password: <a href='{resetLink}'>Reset Password</a>. If you did not request a password change, please ignore this email.");
 
-            ViewBag.Message = "Reset password link has been sent to your email.";
-            return RedirectToAction("Login", "Account");
+            // Return PartialView with success message
+            return PartialView("_CheckMailPartial", email);
         }
+
         [HttpGet]
         public IActionResult RenewPassword(string userId, string token)
         {
