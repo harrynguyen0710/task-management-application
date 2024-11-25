@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using task_management.IRepositories;
@@ -8,44 +9,65 @@ using task_management.ViewModels;
 
 namespace task_management.Controllers
 {
+
     [Authorize]
     public class ProjectController : Controller
     {
+        const string MANAGER = "Manager";
+        const string STAFF = "Staff";
+
         private readonly ProjectService _projectService;
         private readonly UserService _userService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IdentityService _identityService;
         private readonly TaskService _taskService;
+        private readonly ProjectAssignmentService _projectAssignmentService;
+        private readonly UserManager<Users> _userManager;
 
         public ProjectController(ProjectService projectService, UserService userService,
-            IUnitOfWork unitOfWork, IdentityService identityService, TaskService taskService)
+            IUnitOfWork unitOfWork, IdentityService identityService,
+            TaskService taskService, ProjectAssignmentService projectAssignmentService, UserManager<Users> userManager)
         {
             _projectService = projectService;
             _userService = userService;
             _unitOfWork = unitOfWork;
             _identityService = identityService;
             _taskService = taskService;
+            _projectAssignmentService = projectAssignmentService;
+            _userManager = userManager;
         }
 
         public async Task<IActionResult> Index()
         {
-            var projects = await _projectService.GetAllProjectsAsync();
+            var user = await _userManager.GetUserAsync(User);
+            var role = await _userManager.GetRolesAsync(user);
+
+            var roleName = role.FirstOrDefault();
+            var projects = roleName == MANAGER
+            ? await _projectService.GetAllProjectsAsync()
+            : _projectAssignmentService.GetProjectsByUserId(user.Id);
+
             return View(projects);
+
         }
 
+        [Authorize(Roles = MANAGER)]
         public IActionResult Create()
         {
             return View();
         }
 
+        [Authorize(Roles = MANAGER)]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Project project)
         {
+            project.isActive = true;
             await _projectService.AddProjectAsync(project);
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Roles = MANAGER)]
         public async Task<IActionResult> Edit(int id)
         {
             var project = await _projectService.GetProjectByIdAsync(id);
@@ -57,6 +79,7 @@ namespace task_management.Controllers
             return View(project);
         }
 
+        [Authorize(Roles = MANAGER)]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Project project)
@@ -96,6 +119,7 @@ namespace task_management.Controllers
                 TotalTasks = totalTasks,
             };
 
+
             ViewBag.AvailableUsers = new SelectList(availableUsers, "Id", "fullName");
             ViewBag.Staff = new SelectList(staffRoles, "Id", "fullName");
             return View(detailProject);
@@ -114,6 +138,8 @@ namespace task_management.Controllers
             var filteredTasks = string.IsNullOrEmpty(searchTerm)
                 ? allTasks
                 : await _taskService.SearchTaskByName(searchTerm);
+            
+            var totalTasks = _taskService.GetTotalTasks(projectId);
 
             // Prepare the ProjectDetails view model
             var detailProject = new ProjectDetails
@@ -123,6 +149,7 @@ namespace task_management.Controllers
                 Tasks = filteredTasks,
                 PageNumber = pageNumber,
                 PageSize = pageSize,
+                TotalTasks = totalTasks
             };
 
             // Return the partial view with the task details
@@ -153,9 +180,6 @@ namespace task_management.Controllers
             //// Fetch the paginated tasks
             var jointTasks = await _taskService.GetTasksInProjects(projectId, pageNumber, pageSize);
 
-
-          
-
             // Prepare the ProjectDetails view model
             var detailProject = new ProjectDetails
             {
@@ -170,6 +194,7 @@ namespace task_management.Controllers
 
         }
 
+        [Authorize(Roles = MANAGER)]
         [HttpPost]
         public async Task<IActionResult> AddUserToProject(int projectId, string userId)
         {
@@ -190,6 +215,7 @@ namespace task_management.Controllers
             }
         }
 
+        [Authorize(Roles = MANAGER)]
         [HttpPost]
         public async Task<IActionResult> RemoveUserFromProject(int projectId, string userId)
         {
@@ -210,7 +236,7 @@ namespace task_management.Controllers
             }
         }
 
-
+        [Authorize(Roles = MANAGER)]
         [HttpPost]
         public async Task<IActionResult> RemoveUserToProject(int projectId, string userId)
         {
@@ -219,6 +245,7 @@ namespace task_management.Controllers
             return RedirectToAction("Details", new { id = projectId });
         }
 
+        [Authorize(Roles = MANAGER)]
         [HttpPatch]
         public async Task<IActionResult> InActiveProject(Project project)
         {
@@ -226,6 +253,7 @@ namespace task_management.Controllers
             return RedirectToAction("Details", new { id = project.projectId });
         }
 
+        [Authorize(Roles = MANAGER)]
         [HttpPut]
         public async Task<IActionResult> Remove(int projectId)
         {

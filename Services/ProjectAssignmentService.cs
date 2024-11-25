@@ -18,6 +18,11 @@ namespace task_management.Services
             return assignment;
         }
 
+        public List<Project> GetProjectsByUserId(string userId)
+        {
+            var projects =  _unitOfWork.ProjectAssignmentRepository.GetProjectsByUserId(userId); 
+            return projects;
+        }
         public async Task UpdateAssignment(ProjectAssignment projectAssignment)
         {
             _unitOfWork.Repository<ProjectAssignment>().Update(projectAssignment);

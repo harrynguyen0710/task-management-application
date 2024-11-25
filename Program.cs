@@ -14,10 +14,27 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddScoped<EmailService>(provider => new EmailService(
-    Environment.GetEnvironmentVariable("SMTP_USERNAME"),
-    Environment.GetEnvironmentVariable("SMTP_PASSWORD")
-));
+//builder.Services.AddScoped<EmailService>(provider => new EmailService(
+//    Environment.GetEnvironmentVariable("SMTP_USERNAME"),
+//    Environment.GetEnvironmentVariable("SMTP_PASSWORD")
+//));
+
+builder.Services.AddScoped<EmailService>(provider =>
+{
+    var smtpUsername = Environment.GetEnvironmentVariable("SMTP_USERNAME");
+    var smtpPassword = Environment.GetEnvironmentVariable("SMTP_PASSWORD");
+
+    if (string.IsNullOrWhiteSpace(smtpUsername) || string.IsNullOrWhiteSpace(smtpPassword))
+    {
+        throw new InvalidOperationException("SMTP_USERNAME and SMTP_PASSWORD must be set in the environment variables.");
+    }
+    Console.WriteLine($"SMTP_USERNAME: {Environment.GetEnvironmentVariable("SMTP_USERNAME")}");
+    Console.WriteLine($"SMTP_PASSWORD: {Environment.GetEnvironmentVariable("SMTP_PASSWORD")}");
+
+
+    return new EmailService(smtpUsername, smtpPassword);
+});
+
 
 
 // Add services to the container.
@@ -28,7 +45,7 @@ builder.Services.AddScoped<ProjectService>();
 builder.Services.AddScoped<IdentityService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<TaskService>();
-builder.Services.AddScoped<ProjectAssignmentService>(); 
+builder.Services.AddScoped<ProjectAssignmentService>();
 builder.Services.AddScoped<IProjectAssignment, ProjectAssignmentRepository>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
@@ -78,17 +95,17 @@ app.UseAuthorization();
 
 
 
-using (var scope = app.Services.CreateScope())
-{
-    var roleManger = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    var roles = new[] { "Admin", "Manager", "Staff" };
+//using (var scope = app.Services.CreateScope())
+//{
+//    var roleManger = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+//    var roles = new[] { "Admin", "Manager", "Staff" };
 
-    foreach (var role in roles)
-    {
-        if (!await roleManger.RoleExistsAsync(role))
-            await roleManger.CreateAsync(new IdentityRole(role));
-    }
-}
+//    foreach (var role in roles)
+//    {
+//        if (!await roleManger.RoleExistsAsync(role))
+//            await roleManger.CreateAsync(new IdentityRole(role));
+//    }
+//}
 
 app.MapControllerRoute(
     name: "default",

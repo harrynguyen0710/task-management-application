@@ -1,4 +1,7 @@
-﻿<div class="w-64 bg-white h-screen shadow-md">
+﻿@{
+    var isManager = User.IsInRole("Manager");
+}
+<div class="w-64 bg-white h-screen shadow-md">
     <div class="p-4 flex items-center">
         <img src="/images/Icon/siu.jpg" alt="SIU" class="w-8 h-8 mr-4">
         <span class="text-xl font-semibold">
@@ -16,6 +19,8 @@
             </li>
 
             <!-- Users Section -->
+                    @if (isManager)
+            {
             <li class="px-4 py-2">
                 <span class="text-gray-500">Users</span>
                 <ul class="ml-4 mt-2">
@@ -31,8 +36,10 @@
                             All Users
                         </a>
                     </li>
+
                 </ul>
             </li>
+            }
 
             <!-- Profile Section -->
             <li class="px-4 py-2">
@@ -51,12 +58,16 @@
             <li class="px-4 py-2">
                 <span class="text-gray-500">Projects</span>
                 <ul class="ml-4 mt-2">
+                    @if(isManager)
+            {
                     <li class="py-1">
                         <a class="flex items-center text-gray-700" href="@Url.Action("Create", "Project")">
                             <i class="fas fa-folder-plus mr-2"></i> <!-- Create Project icon -->
                             Create Project
                         </a>
                     </li>
+
+            }
                     <li class="py-1">
                         <a class="flex items-center text-gray-700" href="@Url.Action("Index", "Project")">
                             <i class="fas fa-folder-open mr-2"></i> <!-- Project Lists icon -->
