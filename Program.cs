@@ -28,6 +28,7 @@ builder.Services.AddScoped<ProjectService>();
 builder.Services.AddScoped<IdentityService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<TaskService>();
+builder.Services.AddScoped<ProjectAssignmentService>(); 
 builder.Services.AddScoped<IProjectAssignment, ProjectAssignmentRepository>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();

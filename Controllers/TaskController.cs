@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using task_management.Models;
 using task_management.Services;
 using task_management.ViewModels;
 
@@ -11,10 +12,12 @@ namespace task_management.Controllers
     {
         private readonly TaskService _taskService;
         private readonly UserService _userService;
-        public TaskController(TaskService taskService, UserService userService)
+        private readonly ProjectAssignmentService _projectAssignmentService;
+        public TaskController(TaskService taskService, UserService userService, ProjectAssignmentService projectAssignmentService)
         {
             _taskService = taskService;
             _userService = userService;
+            _projectAssignmentService = projectAssignmentService;
         }
         public IActionResult Index()
         {
@@ -52,17 +55,40 @@ namespace task_management.Controllers
         }
 
 
-        //public async Task<IActionResult> UpdateTask(int projectId)
-        //{
-        //    var availableUsers = await _userService.GetUsersByProjectId(projectId);
-        //    ViewBag.AvailableUsers = new SelectList(availableUsers, "Id", "UserName");
-        //    var taskDetails = new TaskDetails
-        //    {
-        //        projectId = projectId,
-        //    };
+        public async Task<IActionResult> Update(int projectId, int taskId)
+        {
+            var availableUsers = await _userService.GetUsersByProjectId(projectId);
+            var task = await _taskService.GetTaskByIdAsync(taskId); 
+            ViewBag.AvailableUsers = new SelectList(availableUsers, "Id", "fullName");
+            var taskDetails = new TaskDetails
+            {
+                Tasks = task,
+                projectId = projectId,
+            };
 
-        //    return View(taskDetails);
-        //}
+            return View(taskDetails);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Update(TaskDetails taskDetails)
+        {
+            Console.WriteLine($"Task Details:");
+            Console.WriteLine($"Task ID: {taskDetails.Tasks.taskId}");
+            Console.WriteLine($"Name: {taskDetails.Tasks.name}");
+            Console.WriteLine($"Description: {taskDetails.Tasks.description}");
+            Console.WriteLine($"Start Date: {taskDetails.Tasks.startDate}");
+            Console.WriteLine($"Due Date: {taskDetails.Tasks.dueDate}");
+            Console.WriteLine($"Priority: {taskDetails.Tasks.priority}");
+            Console.WriteLine($"Status: {taskDetails.Tasks.status}");
+            Console.WriteLine($"Is Active: {taskDetails.Tasks.isActive}");
+            Console.WriteLine($"Project ID: {taskDetails.Tasks.projectId}");
+            Console.WriteLine($"User ID: {taskDetails.Tasks.userId}");
+            Console.WriteLine($"TaskDetails Project ID: {taskDetails.projectId}");
+
+            await _taskService.UpdateTaskAsync(taskDetails.Tasks);
+            TempData["InActiveTaskMessage"] = "Task updated from the project successfully!";
+            return RedirectToAction("Details", "Project", new { id = taskDetails.Tasks.projectId });
+        }
 
 
         [HttpPut]

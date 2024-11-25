@@ -1,5 +1,7 @@
-﻿using task_management.IRepositories;
+﻿using System.Threading.Tasks;
+using task_management.IRepositories;
 using task_management.Models;
+using task_management.Repositories;
 
 namespace task_management.Services
 {
@@ -18,16 +20,15 @@ namespace task_management.Services
             return projects;
         }
 
-
         public async Task AddTaskAsync(Tasks task)
         {
             _unitOfWork.Repository<Tasks>().Add(task);
             await _unitOfWork.CompleteAsync();
         }
 
-        public async Task UpdateProjectAsync(Tasks project)
+        public async Task UpdateTaskAsync(Tasks task)
         {
-            _unitOfWork.Repository<Tasks>().Update(project);
+            _unitOfWork.Repository<Tasks>().Update(task);
             await _unitOfWork.CompleteAsync();
         }
 
@@ -93,8 +94,6 @@ namespace task_management.Services
         {
             return await _unitOfWork.TaskRepository.GetTaskById(id);
         }
-
-
 
 
     }
