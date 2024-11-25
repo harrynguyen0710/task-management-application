@@ -50,8 +50,11 @@
                         '@task.ProjectAssignment.User.fullName',
                         '@task.dueDate.ToString("dd/MM/yyyy")',
                         '@task.description')">
-                        <i class="fas fa-edit"></i>
+                        <i class="fa-solid fa-circle-info"></i>
                     </button>
+                    <a asp-controller="Task" asp-action="Update" asp-route-projectId="@task.projectId" asp-route-taskId="@task.taskId">
+                        <i class="fas fa-edit"></i>
+                    </a>
                     <a href="#" onclick="removeTask(@task.projectId, @task.taskId)" class="text-red-500">
                         <i class="fas fa-trash-alt"></i>
                     </a>
