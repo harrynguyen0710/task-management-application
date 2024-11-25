@@ -1,5 +1,7 @@
 ﻿@model IEnumerable<task_management.Models.Project>
-
+@{
+    var isManager = User.IsInRole("Manager");
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,12 +24,15 @@
             <h2 class="text-3xl font-bold mb-6">Projects</h2>
 
             <!-- Button to Create New Project -->
-            <div class="flex justify-end mb-8">
-                <a href="@Url.Action("Create", "Project")" class="bg-blue-600 text-white text-lg px-4 py-2 rounded-md shadow-md hover:bg-blue-700 focus:outline-none flex items-center" title="Create New Project">
-                    <i class="fas fa-plus-circle text-2xl mr-2"></i>
-                    <span class="hidden sm:inline">Create New Project</span>
-                </a>
-            </div>
+            @if (isManager)
+            {
+                <div class="flex justify-end mb-8">
+                    <a href="@Url.Action("Create", "Project")" class="bg-blue-600 text-white text-lg px-4 py-2 rounded-md shadow-md hover:bg-blue-700 focus:outline-none flex items-center" title="Create New Project">
+                        <i class="fas fa-plus-circle text-2xl mr-2"></i>
+                        <span class="hidden sm:inline">Create New Project</span>
+                    </a>
+                </div>
+            } 
 
             <!-- Projects List -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -40,12 +45,16 @@
                             <a href="@Url.Action("Details", "Project", new { id = project.projectId })" class="text-blue-600 hover:text-blue-800 ml-4" title="View Details">
                                 <i class="fas fa-info-circle"></i>
                             </a>
-                            <a href="@Url.Action("Edit", "Project", new { id = project.projectId })" class="text-blue-600 hover:text-blue-800 ml-4 " title="Edit Project">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            <a style="cursor: pointer;" onclick="removeProject(@project.projectId)"  class="text-blue-600 hover:text-blue-800 ml-4 " title="Remove Project">
-                                <i class="fa-solid fa-trash" style="color: #1f70c7;"></i>
-                            </a>
+                            @if(isManager)
+                            {
+                                <a href="@Url.Action("Edit", "Project", new { id = project.projectId })" class="text-blue-600 hover:text-blue-800 ml-4 " title="Edit Project">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a style="cursor: pointer;" onclick="removeProject(@project.projectId)" class="text-blue-600 hover:text-blue-800 ml-4 " title="Remove Project">
+                                    <i class="fa-solid fa-trash" style="color: #1f70c7;"></i>
+                                </a>
+
+                             }
                         </div>
                         <p class="mb-2 text-gray-500">
                             <strong>Status:</strong>
