@@ -18,13 +18,22 @@
         </div>
         <div class="flex-1 p-8 overflow-y-auto">
             <div class="container mx-auto mt-8">
-                <h1 class="text-3xl font-bold mb-4">Project Details</h1>
+                <div class="flex items-center justify-between mb-4">
+                    <h1 class="text-3xl font-bold flex items-center">
+                        Project Details
+                    </h1>
+                </div>
                 <div class="flex flex-wrap -mx-4">
                     <!-- Left Column: Project Information and Statistics -->
                     <div class="w-full lg:w-1/2 px-4 mb-6">
                         <!-- Project Information Section -->
                         <div class="bg-white p-6 rounded-lg shadow mb-6">
-                            <h2 class="text-2xl font-bold mb-2">@Model.Project.name</h2>
+                            <div class="flex items-center justify-between mb-2">
+                                <h2 class="text-2xl font-bold flex items-center">@Model.Project.name</h2>
+                                <a asp-controller="Project" asp-action="FullMemberList" asp-route-projectId="@Model.Project.projectId" class="text-blue-500 cursor-pointer ml-auto">
+                                    <i class="fas fa-file-alt text-green-500 text-2xl"></i>
+                                </a>
+                            </div>
                             <p class="text-gray-700 mb-4"><strong>Description:</strong> @Model.Project.description</p>
                             <p class="text-gray-700 mb-4"><strong>Start Date:</strong> @Model.Project.startDate.ToString("d")</p>
                             <p class="text-gray-700 mb-2"><strong>Status:</strong></p>
@@ -258,6 +267,12 @@
         {
             <script>
                 showPopupNotification('@TempData.Peek("AddTaskMessage")');
+            </script>
+        }
+        @if (TempData["InActiveTaskMessage"] != null)
+        {
+            <script>
+                showPopupNotification('@TempData.Peek("InActiveTaskMessage")');
             </script>
         }
         <div id="popup" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">

@@ -158,6 +158,7 @@ namespace task_management.Controllers
                 return RedirectToAction("Index", "Profile");
             }
             ModelState.AddModelError(string.Empty, "Password or Email is incorrect. Please re-enter!");
+
             return RedirectToAction("Login", "Account");
         }
 
