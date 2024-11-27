@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using task_management.Models;
 using task_management.Services;
 using task_management.ViewModels;
 
@@ -58,7 +57,7 @@ namespace task_management.Controllers
         public async Task<IActionResult> Update(int projectId, int taskId)
         {
             var availableUsers = await _userService.GetUsersByProjectId(projectId);
-            var task = await _taskService.GetTaskByIdAsync(taskId); 
+            var task = await _taskService.GetTaskByIdAsync(taskId);
             ViewBag.AvailableUsers = new SelectList(availableUsers, "Id", "fullName");
             var taskDetails = new TaskDetails
             {
