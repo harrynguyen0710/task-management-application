@@ -47,7 +47,7 @@ pipeline {
                         docker pull ${DOCKER_IMAGE} &&
                         docker stop ${CONTAINER_NAME} || true &&
                         docker rm ${CONTAINER_NAME} || true &&
-                        docker run -d -p 80:80 -e ASPNETCORE_URLS="http://0.0.0.0:80" --name ${CONTAINER_NAME} ${DOCKER_IMAGE}
+                        docker run -d -p 80:80 -e ASPNETCORE_URLS="http://0.0.0.0:80" " --name ${CONTAINER_NAME} ${DOCKER_IMAGE}
                         """
                         echo "Deployment complete."
                     } catch (Exception e) {
