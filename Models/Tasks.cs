@@ -28,11 +28,18 @@ namespace task_management.Models
         [Required(ErrorMessage = "Please select status mode")]
         [Display(Name = "Status")]
         public string status { get; set; }
+        [Display(Name = "Progress")]
+        public int? progress { get; set; } = 0;
+
+        [Display(Name = "Feedback")]
+        public string? feedback { get; set; }
         public bool isActive { get; set; } = true;
 
         [ForeignKey("ProjectAssignments")]
         public int projectId { get; set; }
         public string userId { get; set; }
+
+
         public virtual ProjectAssignment ProjectAssignment { get; set; }    
 
 
