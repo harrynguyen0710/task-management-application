@@ -28,8 +28,6 @@ builder.Services.AddScoped<EmailService>(provider =>
     {
         throw new InvalidOperationException("SMTP_USERNAME and SMTP_PASSWORD must be set in the environment variables.");
     }
-    Console.WriteLine($"SMTP_USERNAME: {Environment.GetEnvironmentVariable("SMTP_USERNAME")}");
-    Console.WriteLine($"SMTP_PASSWORD: {Environment.GetEnvironmentVariable("SMTP_PASSWORD")}");
 
 
     return new EmailService(smtpUsername, smtpPassword);

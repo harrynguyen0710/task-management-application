@@ -19,6 +19,9 @@ namespace task_management.Models
         [Display(Name = "Status")]
         public string status { get; set; }
 
+        [Display(Name = "Progress")]
+        public int? progress { get; set; } = 0;
+
         [Display(Name = "Target")]
         [Required(ErrorMessage = "Please enter project target")]
         public string target { get; set; }

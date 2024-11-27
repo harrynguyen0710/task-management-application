@@ -72,18 +72,6 @@ namespace task_management.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(TaskDetails taskDetails)
         {
-            Console.WriteLine($"Task Details:");
-            Console.WriteLine($"Task ID: {taskDetails.Tasks.taskId}");
-            Console.WriteLine($"Name: {taskDetails.Tasks.name}");
-            Console.WriteLine($"Description: {taskDetails.Tasks.description}");
-            Console.WriteLine($"Start Date: {taskDetails.Tasks.startDate}");
-            Console.WriteLine($"Due Date: {taskDetails.Tasks.dueDate}");
-            Console.WriteLine($"Priority: {taskDetails.Tasks.priority}");
-            Console.WriteLine($"Status: {taskDetails.Tasks.status}");
-            Console.WriteLine($"Is Active: {taskDetails.Tasks.isActive}");
-            Console.WriteLine($"Project ID: {taskDetails.Tasks.projectId}");
-            Console.WriteLine($"User ID: {taskDetails.Tasks.userId}");
-            Console.WriteLine($"TaskDetails Project ID: {taskDetails.projectId}");
 
             await _taskService.UpdateTaskAsync(taskDetails.Tasks);
             TempData["InActiveTaskMessage"] = "Task updated from the project successfully!";

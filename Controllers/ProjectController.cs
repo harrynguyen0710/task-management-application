@@ -84,6 +84,7 @@ namespace task_management.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Project project)
         {
+            project.isActive = true;
             await _projectService.UpdateProjectAsync(project);
             return RedirectToAction(nameof(Index));
         }
