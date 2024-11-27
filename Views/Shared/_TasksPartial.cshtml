@@ -62,18 +62,7 @@
             </div>
         }
         <!-- Pagination -->
-        <div class="flex justify-center mt-4">
-            <nav aria-label="Page navigation">
-                <ul class="flex list-style-none">
-                    @for (int i = 1; i <= Model.TotalPages; i++)
-                    {
-                        <li class="page-item">
-                            <a href="#" class="page-link pagination-button" data-pagenumber="@i">@i</a>
-                        </li>
-                    }
-                </ul>
-            </nav>
-        </div>
+        @await Html.PartialAsync("_PaginationPartial", Model)
     }
     else
     {
