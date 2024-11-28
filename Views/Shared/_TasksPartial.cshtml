@@ -44,16 +44,19 @@
                 <div>@task.ProjectAssignment.User.fullName</div>
                 <div>
                     <button class="text-blue-600 hover:text-blue-900"
-                            onclick="openModal('@task.name',
-                        '@task.startDate.ToString("dd/MM/yyyy")',
-                        '@task.status',
-                        '@task.priority',
-                        '@task.ProjectAssignment.User.fullName',
-                        '@task.dueDate.ToString("dd/MM/yyyy")',
-    '@task.description',
-'@task.progress')">
+                            onclick="openModal(
+                            '@task.name',
+                            '@task.startDate.ToString("dd/MM/yyyy")',
+                            '@task.status',
+                            '@task.priority',
+                            '@task.ProjectAssignment.User.fullName',
+                            '@task.dueDate.ToString("dd/MM/yyyy")',
+                            '@task.description',
+                            '@task.progress',
+                            '@task.feedback')">
                         <i class="fa-solid fa-circle-info"></i>
                     </button>
+
                     <a asp-controller="Task" asp-action="Update" asp-route-projectId="@task.projectId" asp-route-taskId="@task.taskId">
                         <i class="fas fa-edit"></i>
                     </a>
