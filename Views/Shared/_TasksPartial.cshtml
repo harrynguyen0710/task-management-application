@@ -40,6 +40,7 @@
                 <div>
                     <span class="inline-block px-3 py-1 rounded @priorityClass">@task.priority</span>
                 </div>
+
                 <div>@task.ProjectAssignment.User.fullName</div>
                 <div>
                     <button class="text-blue-600 hover:text-blue-900"
@@ -49,7 +50,8 @@
                         '@task.priority',
                         '@task.ProjectAssignment.User.fullName',
                         '@task.dueDate.ToString("dd/MM/yyyy")',
-                        '@task.description')">
+    '@task.description',
+'@task.progress')">
                         <i class="fa-solid fa-circle-info"></i>
                     </button>
                     <a asp-controller="Task" asp-action="Update" asp-route-projectId="@task.projectId" asp-route-taskId="@task.taskId">

@@ -16,8 +16,8 @@ namespace task_management.Services
 
         public async Task<IEnumerable<Tasks>> GetAllProjectsAsync()
         {
-            var projects = await _unitOfWork.Repository<Tasks>().GetAllAsync();
-            return projects;
+            var tasks = await _unitOfWork.Repository<Tasks>().GetAllAsync();
+            return tasks;
         }
 
         public async Task AddTaskAsync(Tasks task)
@@ -29,6 +29,7 @@ namespace task_management.Services
         public async Task UpdateTaskAsync(Tasks task)
         {
             _unitOfWork.Repository<Tasks>().Update(task);
+            Console.WriteLine("IN SERVICE HOANG NGUYEN");
             await _unitOfWork.CompleteAsync();
         }
 

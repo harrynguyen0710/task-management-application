@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using task_management.Data;
 using task_management.Services;
 using task_management.ViewModels;
 
@@ -12,12 +13,16 @@ namespace task_management.Controllers
         private readonly TaskService _taskService;
         private readonly UserService _userService;
         private readonly ProjectAssignmentService _projectAssignmentService;
-        public TaskController(TaskService taskService, UserService userService, ProjectAssignmentService projectAssignmentService)
+        private readonly ApplicationDbContext _context;
+        public TaskController(TaskService taskService, UserService userService, 
+            ProjectAssignmentService projectAssignmentService, ApplicationDbContext context)
         {
             _taskService = taskService;
             _userService = userService;
             _projectAssignmentService = projectAssignmentService;
+            _context = context;
         }
+
         public IActionResult Index()
         {
             return View();
@@ -64,15 +69,14 @@ namespace task_management.Controllers
                 Tasks = task,
                 projectId = projectId,
             };
-
             return View(taskDetails);
         }
 
         [HttpPost]
         public async Task<IActionResult> Update(TaskDetails taskDetails)
         {
-
-            await _taskService.UpdateTaskAsync(taskDetails.Tasks);
+            var task = taskDetails.Tasks;
+            await _taskService.UpdateTaskAsync(task);
             TempData["InActiveTaskMessage"] = "Task updated from the project successfully!";
             return RedirectToAction("Details", "Project", new { id = taskDetails.Tasks.projectId });
         }
