@@ -39,7 +39,7 @@ function confirmRemovePerson(event) {
     });
 }
 
-function openModal(name, startDate, status, priority, assignee, dueDate, description, progress) {
+function openModal(name, startDate, status, priority, assignee, dueDate, description, progress, feedback) {
     document.getElementById('taskName').innerText = name;
     document.getElementById('taskStartDate').innerText = startDate;
     document.getElementById('taskStatus').innerText = status;
@@ -47,7 +47,8 @@ function openModal(name, startDate, status, priority, assignee, dueDate, descrip
     document.getElementById('taskAssignee').innerText = assignee;
     document.getElementById('taskEndDate').innerText = dueDate;
     document.getElementById('taskDescription').innerText = description;
-    document.getElementById('taskProgress').innerText = progress;
+    document.getElementById("taskProgress").innerText = `${progress} %`;
+    document.getElementById("taskFeedback").innerText = feedback;
 
     const taskPriority = document.getElementById('taskPriority');
     const taskStatus = document.getElementById('taskStatus');
